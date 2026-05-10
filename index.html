@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OLED Video Converter Studio</title>
+  <title>OLED Video Converter Studio by The Zx</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Fira+Code:wght@400;500&display=swap');
+
+    :root {
+      --primary: #00ffcc;
+      --primary-hover: #00e6b8;
+      --bg: #09090b;
+      --card-bg: #18181b;
+      --border: #27272a;
+      --text: #e4e4e7;
+      --text-muted: #a1a1aa;
+      --danger: #ff4444;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 2rem 1rem;
+      min-height: 100vh;
+    }
+
+    h1 {
+      text-align: center;
+      color: #fff;
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 2rem;
+      letter-spacing: -1px;
+      text-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
+    }
+    h1 span { color: var(--primary); }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .oled-icon {
+      width: 40px;
+      height: 40px;
+      background: #000;
+      border-radius: 6px;
+      border: 1px solid #333;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.5);
+    }
+    .oled-icon::after {
+      content: '';
+      position: absolute;
+      top: 2px; left: 2px; right: 2px; bottom: 2px;
+      background: rgba(0, 255, 204, 0.1);
+      border: 1px solid rgba(0, 255, 204, 0.2);
+      color: var(--primary);
+      font-size: 8px;
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      letter-spacing: -0.5px;
+    }
+
+    h2.settings-title .oled-icon::after { content: 'INP'; }
+    h2.code-title .oled-icon::after { content: 'PROG.'; font-size: 7px; text-shadow: 0 0 5px var(--primary); }
+    h2.preview-title .oled-icon { background: repeating-linear-gradient(0deg, #000, #000 2px, rgba(0, 255, 204, 0.1) 2px, rgba(0, 255, 204, 0.1) 4px); }
+    h2.preview-title .oled-icon::after { display: none; }
+
+    /* SEGMENTED CONTROL (TABS) */
+    .segmented-control {
+      display: flex;
+      background: #000;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .segmented-control input[type="radio"] { display: none; }
+    .segmented-control label {
+      flex: 1;
+      text-align: center;
+      padding: 12px;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: 0.3s;
+      font-weight: bold;
+      font-size: 0.9rem;
+      margin-bottom: 0;
+    }
+    .segmented-control input[type="radio"]:checked + label {
+      background: var(--primary);
+      color: #000;
+    }
+
+    .control-group { margin-bottom: 15px; }
+    .control-group label.title {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    input[type="file"], select, input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      background: #09090b;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: #fff;
+      font-family: inherit;
+      outline: none;
+      transition: border 0.3s ease;
+    }
+    input[type="file"]:hover, select:hover, input[type="number"]:focus { border-color: var(--primary); }
+    input[type="file"] { border: 1px dashed #52525b; cursor: pointer; color: var(--primary); }
+    
+    .row { display: flex; gap: 10px; }
+    .row > div { flex: 1; }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      background: #3f3f46;
+      border-radius: 5px;
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--primary);
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary);
+      border: none;
+      border-radius: 8px;
+      color: #000;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      margin-top: 10px;
+    }
+    button:hover { background: var(--primary-hover); transform: translateY(-2px); }
+    button:disabled { background: #3f3f46; color: #a1a1aa; cursor: not-allowed; transform: none; }
+
+    .btn-secondary { background: #27272a; color: #fff; margin-top: 15px; }
+    .btn-secondary:hover { background: #3f3f46; }
+
+    .status-badge {
+      display: inline-flex;
+      justify-content: center;
+      width: 100%;
+      padding: 10px;
+      background: rgba(0, 255, 204, 0.1);
+      border: 1px solid rgba(0, 255, 204, 0.2);
+      color: var(--primary);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-top: 15px;
+    }
+
+    .oled-bezel {
+      background: #000;
+      padding: 15px;
+      border-radius: 12px;
+      border: 2px solid #27272a;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 0 10px 20px rgba(0,0,0,0.5);
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 180px;
+    }
+    .oled-label {
+      position: absolute;
+      top: -10px; left: 15px;
+      background: var(--card-bg);
+      padding: 0 5px;
+      font-size: 10px;
+      color: #52525b;
+      font-weight: bold;
+    }
+
+    canvas {
+      image-rendering: pixelated;
+      background: #000;
+      border-radius: 2px;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+      transform: scale(2); 
+      transform-origin: center;
+      margin: 30px 0; 
+    }
+
+    textarea {
+      width: 100%;
+      height: 300px;
+      background: #0d0d0d;
+      color: #4ade80;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Fira Code', monospace;
+      font-size: 13px;
+      padding: 15px;
+      resize: vertical;
+    }
+    textarea::-webkit-scrollbar { width: 8px; height: 8px; }
+    textarea::-webkit-scrollbar-track { background: #09090b; border-radius: 4px; }
+    textarea::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
+
+    .note { font-size: 0.8rem; color: #71717a; margin-top: 12px; text-align: center; line-height: 1.4; }
+  </style>
+</head>
+<body>
+
+  <h1>OLED <span>Animation Studio</span></h1>
+
+  <div class="container">
+    <div class="card">
+      <h2 class="settings-title">
+        ⚙️ Input Media
+        <div class="oled-icon"></div>
+      </h2>
+
+      <div class="segmented-control">
+        <input type="radio" id="modeVideo" name="inputMode" value="video" checked>
+        <label for="modeVideo">MP4 Video</label>
+        <input type="radio" id="modeFrames" name="inputMode" value="frames">
+        <label for="modeFrames">Image Frames</label>
+      </div>
+
+      <div id="videoInputGroup" class="control-group">
+        <label class="title">Upload Video (Maks 15-20 Detik)</label>
+        <input type="file" id="uploadVideo" accept="video/mp4,video/webm" />
+      </div>
+
+      <div id="frameInputGroup" class="control-group" style="display: none;">
+        <label class="title">Upload Multi Gambar (Pilih Banyak)</label>
+        <input type="file" id="uploadFrames" accept="image/*" multiple />
+      </div>
+      
+      <div class="row">
+        <div class="control-group">
+          <label class="title" id="fpsLabel">Target FPS Ekstrak:</label>
+          <input type="number" id="targetFps" value="10" min="1" max="60" />
+        </div>
+        <div class="control-group">
+          <label class="title">Resolusi OLED:</label>
+          <select id="oledType">
+            <option value="128x64">128x64 (0.96")</option>
+            <option value="128x32">128x32 (0.91")</option>
+            <option value="64x48">64x48 (0.66")</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label class="title" id="thresholdLabel">Threshold (Kontras Hitam/Putih): 127</label>
+        <input type="range" id="threshold" min="0" max="255" value="127" />
+      </div>
+
+      <button id="generateBtn" disabled>Generate C++ Code</button>
+      <div id="status" class="status-badge" style="display: none;"></div>
+    </div>
+
+    <div class="card">
+      <h2 class="preview-title">
+        📺 Live Preview
+        <div class="oled-icon"></div>
+      </h2>
+      <div class="oled-bezel">
+        <span class="oled-label" id="bezelLabel">SSD1306 128x64</span>
+        <canvas id="oled" width="128" height="64"></canvas>
+      </div>
+      <p class="note">
+        *Preview akan terhenti (Pause) saat kamu menahan slider Threshold.<br>
+        *Kecepatan preview disesuaikan dengan input FPS di atas.
+      </p>
+    </div>
+
+    <div class="card" style="grid-column: 1 / -1;">
+      <h2 class="code-title">
+        Arduino / ESP32 PROGMEM Header
+        <div class="oled-icon"></div>
+      </h2>
+      <textarea id="output" readonly placeholder="// Upload media untuk menghasilkan kode C++..."></textarea>
+      <button class="btn-secondary" onclick="copyToClipboard()">📋 Copy Code to Clipboard</button>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('oled');
+    const ctx = canvas.getContext('2d');
+    
+    const modeVideoBtn = document.getElementById('modeVideo');
+    const modeFramesBtn = document.getElementById('modeFrames');
+    const videoInputGroup = document.getElementById('videoInputGroup');
+    const frameInputGroup = document.getElementById('frameInputGroup');
+    const uploadVideo = document.getElementById('uploadVideo');
+    const uploadFrames = document.getElementById('uploadFrames');
+    
+    const fpsLabel = document.getElementById('fpsLabel');
+    const targetFpsInput = document.getElementById('targetFps');
+    const thresholdInput = document.getElementById('threshold');
+    const oledTypeInput = document.getElementById('oledType');
+    const bezelLabel = document.getElementById('bezelLabel');
+    const output = document.getElementById('output');
+    const statusText = document.getElementById('status');
+    const generateBtn = document.getElementById('generateBtn');
+
+    let framesData = []; 
+    let animationInterval = null;
+    let currentFrameIdx = 0;
+    
+    let canvasW = 128;
+    let canvasH = 64;
+
+    // --- TOGGLE LOGIC ---
+    document.querySelectorAll('input[name="inputMode"]').forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        if(e.target.value === 'video') {
+          videoInputGroup.style.display = 'block';
+          frameInputGroup.style.display = 'none';
+          fpsLabel.innerText = 'Target FPS Ekstrak:';
+        } else {
+          videoInputGroup.style.display = 'none';
+          frameInputGroup.style.display = 'block';
+          fpsLabel.innerText = 'Kecepatan Animasi (FPS):';
+        }
+      });
+    });
+
+    // --- RESOLUTION LOGIC ---
+    oledTypeInput.addEventListener('change', (e) => {
+      const [w, h] = e.target.value.split('x').map(Number);
+      canvasW = w;
+      canvasH = h;
+      canvas.width = w;
+      canvas.height = h;
+      bezelLabel.innerText = `SSD1306 ${w}x${h}`;
+      if (framesData.length > 0) renderPreview();
+    });
+
+    // --- THRESHOLD LOGIC ---
+    let isDraggingThreshold = false;
+    ['mousedown', 'touchstart'].forEach(evt => 
+      thresholdInput.addEventListener(evt, () => {
+        isDraggingThreshold = true;
+        if(animationInterval) clearInterval(animationInterval);
+      })
+    );
+    thresholdInput.addEventListener('input', () => {
+      document.getElementById('thresholdLabel').innerText = `Threshold (Kontras Hitam/Putih): ${thresholdInput.value}`;
+      if (framesData.length > 0) renderPreview();
+    });
+    ['mouseup', 'touchend'].forEach(evt => 
+      thresholdInput.addEventListener(evt, () => {
+        isDraggingThreshold = false;
+        if (framesData.length > 0) startAnimation();
+      })
+    );
+
+    targetFpsInput.addEventListener('change', () => {
+        if (framesData.length > 0) startAnimation();
+    });
+
+    // --- 1. LOGIC: UPLOAD MULTI FRAMES (GAMBAR) ---
+    uploadFrames.addEventListener('change', async (event) => {
+      const files = Array.from(event.target.files);
+      if (files.length === 0) return;
+
+      framesData = [];
+      generateBtn.disabled = true;
+      showStatus("Memproses gambar...");
+
+      const loadPromises = files.map(file => {
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => resolve({ img, name: file.name });
+            img.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        });
+      });
+
+      framesData = await Promise.all(loadPromises);
+      framesData.sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true, sensitivity: 'base'}));
+
+      showStatus(`✅ Sukses! ${framesData.length} Frame berhasil dimuat.`);
+      generateBtn.disabled = false;
+      startAnimation();
+    });
+
+    // --- 2. LOGIC: UPLOAD VIDEO (MP4) ---
+    uploadVideo.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      framesData = [];
+      generateBtn.disabled = true;
+      showStatus("⏳ Menyiapkan ekstraksi video...");
+      
+      const targetFps = parseInt(targetFpsInput.value) || 10;
+      const video = document.createElement('video');
+      video.src = URL.createObjectURL(file);
+      video.muted = true;
+      video.playsInline = true;
+
+      video.addEventListener('loadeddata', async () => {
+        const duration = video.duration;
+        const interval = 1 / targetFps;
+        let currentTime = 0;
+        const MAX_FRAMES = 350; 
+
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = canvasW;
+        tempCanvas.height = canvasH;
+        const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
+
+        video.currentTime = currentTime;
+
+        video.addEventListener('seeked', async function onSeeked() {
+          tempCtx.fillStyle = 'black';
+          tempCtx.fillRect(0, 0, canvasW, canvasH);
+          tempCtx.drawImage(video, 0, 0, canvasW, canvasH);
+
+          const img = new Image();
+          img.src = tempCanvas.toDataURL('image/jpeg', 0.9);
+          await new Promise(r => img.onload = r);
+          framesData.push({ img: img });
+
+          currentTime += interval;
+          
+          if (currentTime <= duration && framesData.length < MAX_FRAMES) {
+            showStatus(`⏳ Mengekstrak Frame: ${framesData.length}`);
+            video.currentTime = currentTime;
+          } else {
+            video.removeEventListener('seeked', onSeeked);
+            URL.revokeObjectURL(video.src);
+            
+            showStatus(`✅ Sukses! ${framesData.length} frame berhasil diekstrak.`);
+            generateBtn.disabled = false;
+            startAnimation();
+          }
+        });
+      });
+    });
+
+    // --- PREVIEW & ANIMATION ---
+    function renderPreview() {
+      if (framesData.length === 0) return;
+      
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, canvasW, canvasH);
+      ctx.drawImage(framesData[currentFrameIdx].img, 0, 0, canvasW, canvasH);
+
+      const imageData = ctx.getImageData(0, 0, canvasW, canvasH);
+      const data = imageData.data;
+      const threshold = parseInt(thresholdInput.value);
+
+      for (let i = 0; i < data.length; i += 4) {
+        const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+        const val = avg > threshold ? 255 : 0;
+        data[i] = val;         
+        data[i + 1] = val;     
+        data[i + 2] = val;     
+      }
+      ctx.putImageData(imageData, 0, 0);
+    }
+
+    function startAnimation() {
+      if (animationInterval) clearInterval(animationInterval);
+      const targetFps = parseInt(targetFpsInput.value) || 10;
+      const msPerFrame = 1000 / targetFps;
+      
+      animationInterval = setInterval(() => {
+        if (framesData.length === 0) return;
+        renderPreview();
+        currentFrameIdx = (currentFrameIdx + 1) % framesData.length;
+      }, msPerFrame);
+    }
+
+    // --- CODE GENERATOR ---
+    generateBtn.addEventListener('click', () => {
+      if (framesData.length === 0) return;
+      showStatus("⏳ Generating C++ Code...");
+
+      setTimeout(() => {
+        let cppCode = `// ==========================================\n`;
+        cppCode += `// OLED Video Animation (Generated via Studio)\n`;
+        cppCode += `// Resolution: ${canvasW}x${canvasH} | Total Frames: ${framesData.length}\n`;
+        cppCode += `// Target FPS: ${targetFpsInput.value} FPS\n`;
+        cppCode += `// ==========================================\n\n`;
+        cppCode += `#include <pgmspace.h>\n\n`;
+        cppCode += `const int FRAME_COUNT = ${framesData.length};\n`;
+        cppCode += `const int FRAME_WIDTH = ${canvasW};\n`;
+        cppCode += `const int FRAME_HEIGHT = ${canvasH};\n\n`;
+
+        let arrayNames = [];
+
+        framesData.forEach((frame, idx) => {
+          ctx.fillStyle = "black";
+          ctx.fillRect(0, 0, canvasW, canvasH);
+          ctx.drawImage(frame.img, 0, 0, canvasW, canvasH);
+          
+          const imgData = ctx.getImageData(0, 0, canvasW, canvasH).data;
+          const threshold = parseInt(thresholdInput.value);
+          const varName = `frame_${idx}`;
+          arrayNames.push(varName);
+
+          cppCode += `const unsigned char ${varName} [] PROGMEM = {\n`;
+          
+          let bytes = [];
+          let pages = canvasH / 8;
+
+          for (let page = 0; page < pages; page++) {
+            for (let x = 0; x < canvasW; x++) {
+              let byte = 0;
+              for (let bit = 0; bit < 8; bit++) {
+                const y = (page * 8) + bit;
+                const pos = (y * canvasW + x) * 4;
+                const avg = (imgData[pos] + imgData[pos + 1] + imgData[pos + 2]) / 3;
+                if (avg > threshold) {
+                  byte |= (1 << bit); 
+                }
+              }
+              bytes.push("0x" + byte.toString(16).padStart(2, '0').toUpperCase());
+            }
+          }
+          
+          cppCode += "  " + bytes.join(", ");
+          cppCode += `\n};\n\n`;
+        });
+
+        cppCode += `// Array pointer untuk mempermudah looping di Arduino\n`;
+        cppCode += `const unsigned char* const animation_frames[] PROGMEM = {\n  `;
+        cppCode += arrayNames.join(", ");
+        cppCode += `\n};\n`;
+
+        output.value = cppCode;
+        showStatus("✨ Kode Berhasil Dibuat!");
+        renderPreview(); 
+      }, 50);
+    });
+
+    function copyToClipboard() {
+      if (!output.value) return;
+      output.select();
+      document.execCommand('copy');
+      
+      const btn = document.querySelector('.btn-secondary');
+      const originalText = btn.innerText;
+      btn.innerText = "✅ Tersalin!";
+      setTimeout(() => { btn.innerText = originalText; }, 2000);
+    }
+
+    function showStatus(msg) {
+      statusText.style.display = 'inline-flex';
+      statusText.innerText = msg;
+      if(msg.includes("Error") || msg.includes("Crash")) {
+          statusText.style.color = "var(--danger)";
+          statusText.style.borderColor = "var(--danger)";
+      } else {
+          statusText.style.color = "var(--primary)";
+          statusText.style.borderColor = "rgba(0, 255, 204, 0.2)";
+      }
+    }
+  </script>
+</body>
+</html>
