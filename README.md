@@ -12,11 +12,11 @@ This tool is highly useful for creating lyric animations, moving logos, or short
 
 (🚀 How to Use )
 
-# 1. Image/Video Preparation
+1. Image/Video Preparation
 - **If using images:** Ensure the file naming sequence is correct (e.g., `frame1.png`, `frame2.png`, etc.).
 - **If using video:** Use short videos (10-15 seconds) to avoid running out of microcontroller memory.
 
-# 2. Using the Web Studio
+2. Using the Web Studio
 1. Open this website in your browser.
 2. Select your OLED resolution (e.g., 128x64).
 3. Upload your files in the **Settings & Upload** section.
@@ -24,7 +24,7 @@ This tool is highly useful for creating lyric animations, moving logos, or short
 5. Click the **⚡ Generate C++ Code** button.
 6. Click **📋 Copy Code to Clipboard**.
 
-# 3. Hardware Implementation
+3. Hardware Implementation
 1. Open the **Arduino IDE** (or Wokwi / PlatformIO).
 2. Create a new tab named `animation.h` and paste the copied code.
 3. In the main tab (`.ino`), include the file using `#include "animation.h"`.
