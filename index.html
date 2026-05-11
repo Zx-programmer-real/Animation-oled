@@ -440,60 +440,78 @@
     });
 
     // --- 2. LOGIC: UPLOAD VIDEO (MP4) ---
-    uploadVideo.addEventListener('change', (event) => {
+    // ==========================================
+    // LOGIKA 2: UPLOAD & EKSTRAK VIDEO (DIJAMIN JALAN DI HP)
+    // ==========================================
+    uploadVideoBtn.addEventListener('change', async (event) => {
       const file = event.target.files[0];
       if (!file) return;
 
-      framesData = [];
-      generateBtn.disabled = true;
-      showStatus("⏳ Menyiapkan ekstraksi video...");
+      // Kosongkan input gambar agar tidak bentrok
+      uploadImagesBtn.value = "";
       
-      const targetFps = parseInt(targetFpsInput.value) || 10;
+      if(animationInterval) clearInterval(animationInterval);
+      framesData = [];
+      showStatus("🎥 Membangunkan pemutar video...");
+
+      const targetFps = parseInt(videoFpsInput.value) || 10;
+      const step = 1 / targetFps;
+      const MAX_FRAMES = 200; 
+
       const video = document.createElement('video');
       video.src = URL.createObjectURL(file);
       video.muted = true;
       video.playsInline = true;
+      video.preload = "auto"; // Paksa browser untuk memuat memori
+      video.crossOrigin = "anonymous";
 
-      video.addEventListener('loadeddata', async () => {
+      // TRIK WAJIB UNTUK BROWSER HP: Masukkan video ke halaman web tapi sembunyikan
+      video.style.display = "none";
+      document.body.appendChild(video);
+
+      const tempCanvas = document.createElement('canvas');
+      const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
+
+      // Gunakan 'loadedmetadata' bukan 'loadeddata' agar HP merespons lebih cepat
+      video.addEventListener('loadedmetadata', () => {
         const duration = video.duration;
-        const interval = 1 / targetFps;
         let currentTime = 0;
-        const MAX_FRAMES = 350; 
 
-        const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = canvasW;
-        tempCanvas.height = canvasH;
-        const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
-
-        video.currentTime = currentTime;
-
-        video.addEventListener('seeked', async function onSeeked() {
-          tempCtx.fillStyle = 'black';
-          tempCtx.fillRect(0, 0, canvasW, canvasH);
-          tempCtx.drawImage(video, 0, 0, canvasW, canvasH);
-
-          const img = new Image();
-          img.src = tempCanvas.toDataURL('image/jpeg', 0.9);
-          await new Promise(r => img.onload = r);
-          framesData.push({ img: img });
-
-          currentTime += interval;
+        video.addEventListener('seeked', async () => {
+          tempCanvas.width = canvasW;
+          tempCanvas.height = canvasH;
           
+          tempCtx.drawImage(video, 0, 0, canvasW, canvasH);
+          
+          const img = new Image();
+          img.src = tempCanvas.toDataURL('image/jpeg', 1.0);
+          
+          await new Promise(r => img.onload = r);
+          framesData.push({ img: img, name: `vid_frame_${framesData.length}` });
+
+          currentTime += step;
+
           if (currentTime <= duration && framesData.length < MAX_FRAMES) {
-            showStatus(`⏳ Mengekstrak Frame: ${framesData.length}`);
+            const progress = Math.floor((currentTime / duration) * 100);
+            showStatus(`⏳ Mengekstrak frame... ${progress}% (${framesData.length} Frame)`);
             video.currentTime = currentTime;
           } else {
-            video.removeEventListener('seeked', onSeeked);
-            URL.revokeObjectURL(video.src);
+            showStatus(`✅ Sukses! ${framesData.length} Frame diekstrak dari video.`);
+            // Bersihkan elemen video dari HP agar tidak menuhin memori
+            document.body.removeChild(video);
             
-            showStatus(`✅ Sukses! ${framesData.length} frame berhasil diekstrak.`);
-            generateBtn.disabled = false;
+            speedInput.value = Math.floor(1000 / targetFps); 
             startAnimation();
           }
         });
-      });
-    });
 
+        // Mulai proses ekstraksi
+        video.currentTime = 0;
+      });
+
+      // Pancingan akhir agar mesin video di HP mau menyala
+      video.load();
+    });
     // --- PREVIEW & ANIMATION ---
     function renderPreview() {
       if (framesData.length === 0) return;
