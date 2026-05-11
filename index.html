@@ -95,157 +95,75 @@
       align-items: center;
       letter-spacing: -0.5px;
     }
-
-    h2.settings-title .oled-icon::after { content: 'CONF.'; }
-    h2.code-title .oled-icon::after { content: 'PROG.'; font-size: 7px; text-shadow: 0 0 5px var(--primary); }
-    h2.preview-title .oled-icon { 
-      background: repeating-linear-gradient(0deg, #000, #000 2px, rgba(0, 255, 204, 0.1) 2px, rgba(0, 255, 204, 0.1) 4px);
-    }
+    h2.settings-title .oled-icon::after { content: 'INP'; }
+    h2.code-title .oled-icon::after { content: 'PROG'; font-size: 7px; text-shadow: 0 0 5px var(--primary); }
+    h2.preview-title .oled-icon { background: repeating-linear-gradient(0deg, #000, #000 2px, rgba(0, 255, 204, 0.1) 2px, rgba(0, 255, 204, 0.1) 4px); }
     h2.preview-title .oled-icon::after { display: none; }
+
+    /* TAB STYLE BARU */
+    .tab-container {
+      display: flex;
+      background: #09090b;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 12px;
+      background: transparent;
+      color: var(--text-muted);
+      border: none;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+      border-radius: 0;
+      text-transform: none;
+    }
+    .tab-btn.active {
+      background: var(--primary);
+      color: #000;
+    }
+    .tab-content { display: none; animation: fadeIn 0.3s ease-in-out; }
+    .tab-content.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
     .control-group { margin-bottom: 20px; }
     
-    .upload-box {
+    .section-box {
       background: #09090b;
       border: 1px dashed #52525b;
       border-radius: 8px;
       padding: 15px;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
-    .upload-box h3 { font-size: 0.9rem; color: #fff; margin-bottom: 10px; }
+    .section-box h3 { font-size: 0.9rem; color: var(--primary); margin-bottom: 15px; }
 
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--text-muted);
-    }
+    label { display: block; margin-bottom: 8px; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); }
 
-    input[type="file"], select {
-      width: 100%;
-      padding: 8px;
-      background: #18181b;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--text-muted);
-      cursor: pointer;
-      font-family: inherit;
-    }
+    input[type="file"], select { width: 100%; padding: 10px; background: #18181b; border: 1px solid var(--border); border-radius: 6px; color: var(--text-muted); cursor: pointer; font-family: inherit; }
     select { color: #fff; font-weight: bold; }
 
-    input[type="range"] {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 100%;
-      height: 6px;
-      background: #3f3f46;
-      border-radius: 5px;
-      outline: none;
-    }
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: var(--primary);
-      cursor: pointer;
-      box-shadow: 0 0 10px var(--primary);
-    }
+    input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; background: #3f3f46; border-radius: 5px; outline: none; }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--primary); cursor: pointer; box-shadow: 0 0 10px var(--primary); }
 
-    input[type="number"] {
-      width: 100%;
-      padding: 10px 12px;
-      background: #09090b;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: #fff;
-    }
+    input[type="number"] { width: 100%; padding: 10px 12px; background: #09090b; border: 1px solid var(--border); border-radius: 8px; color: #fff; }
 
-    button {
-      width: 100%;
-      padding: 14px;
-      background: var(--primary);
-      border: none;
-      border-radius: 8px;
-      color: #000;
-      font-weight: 800;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      text-transform: uppercase;
-    }
-    button:hover { background: var(--primary-hover); transform: translateY(-2px); }
+    button.action-btn { width: 100%; padding: 14px; background: #27272a; border: none; border-radius: 8px; color: #fff; font-weight: 800; font-size: 1rem; cursor: pointer; transition: all 0.2s ease; text-transform: uppercase; margin-bottom: 10px; }
+    button.action-btn.primary { background: var(--primary); color: #000; }
+    button.action-btn.primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
+    button.action-btn:hover:not(.primary) { background: #3f3f46; }
 
-    .btn-secondary { background: #27272a; color: #fff; margin-top: 15px; }
-    .btn-secondary:hover { background: #3f3f46; }
+    .status-badge { display: flex; align-items: center; justify-content: center; width: 100%; padding: 12px; background: rgba(0, 255, 204, 0.1); border: 1px solid rgba(0, 255, 204, 0.2); color: var(--primary); border-radius: 8px; font-size: 0.9rem; font-weight: 600; margin-top: 10px; }
 
-    .status-badge {
-      display: inline-flex;
-      justify-content: center;
-      width: 100%;
-      padding: 10px;
-      background: rgba(0, 255, 204, 0.1);
-      border: 1px solid rgba(0, 255, 204, 0.2);
-      color: var(--primary);
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      margin-top: 15px;
-    }
-
-    .oled-bezel {
-      background: #000;
-      padding: 15px;
-      border-radius: 12px;
-      border: 2px solid #27272a;
-      box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 0 10px 20px rgba(0,0,0,0.5);
-      position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 150px;
-    }
-    .oled-label {
-      position: absolute;
-      top: -10px;
-      left: 15px;
-      background: var(--card-bg);
-      padding: 0 5px;
-      font-size: 10px;
-      color: #52525b;
-      font-weight: bold;
-    }
-
-    canvas {
-      image-rendering: pixelated;
-      background: #000;
-      border-radius: 2px;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-      transition: all 0.3s ease;
-      transform: scale(2); 
-      transform-origin: center;
-      margin: 30px 0; 
-    }
-
-    textarea {
-      width: 100%;
-      height: 300px;
-      background: #0d0d0d;
-      color: #4ade80;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-family: 'Fira Code', monospace;
-      font-size: 13px;
-      padding: 15px;
-      resize: vertical;
-    }
-    textarea::-webkit-scrollbar { width: 8px; height: 8px; }
-    textarea::-webkit-scrollbar-track { background: #09090b; border-radius: 4px; }
-    textarea::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
-
-    .note { font-size: 0.8rem; color: #71717a; margin-top: 12px; text-align: center; }
+    .oled-bezel { background: #000; padding: 15px; border-radius: 12px; border: 2px solid #27272a; box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 0 10px 20px rgba(0,0,0,0.5); position: relative; display: flex; justify-content: center; align-items: center; min-height: 150px; }
+    .oled-label { position: absolute; top: -10px; left: 15px; background: var(--card-bg); padding: 0 5px; font-size: 10px; color: #52525b; font-weight: bold; }
+    canvas { image-rendering: pixelated; background: #000; border-radius: 2px; box-shadow: 0 0 15px rgba(255, 255, 255, 0.1); transition: all 0.3s ease; transform: scale(2); transform-origin: center; margin: 30px 0; }
+    textarea { width: 100%; height: 300px; background: #0d0d0d; color: #4ade80; border: 1px solid var(--border); border-radius: 8px; font-family: 'Fira Code', monospace; font-size: 13px; padding: 15px; resize: vertical; }
+    textarea::-webkit-scrollbar { width: 8px; height: 8px; } textarea::-webkit-scrollbar-track { background: #09090b; border-radius: 4px; } textarea::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
+    .note { font-size: 0.75rem; color: #71717a; margin-top: 8px; text-align: center; }
   </style>
 </head>
 <body>
@@ -255,166 +173,212 @@
   <div class="container">
     <div class="card">
       <h2 class="settings-title">
-        ⚙️ Settings & Upload
+        ⚙️ Input Media
         <div class="oled-icon"></div>
       </h2>
 
-      <div class="upload-box">
-        <h3>A. Upload Frame Gambar (Multiple)</h3>
-        <input type="file" id="uploadImages" accept="image/*" multiple />
+      <div class="tab-container">
+        <button id="tabVideoBtn" class="tab-btn active" onclick="switchTab('video')">MP4 Video</button>
+        <button id="tabImageBtn" class="tab-btn" onclick="switchTab('image')">Image Frames</button>
       </div>
 
-      <div class="upload-box">
-        <h3>B. Upload Video (.mp4 / .webm)</h3>
-        <input type="file" id="uploadVideo" accept="video/*" />
-        <div style="display: flex; gap: 10px; margin-top: 10px;">
+      <div id="videoContent" class="tab-content active">
+        <div class="control-group">
+          <label>Upload Video (Maks 15-20 Detik)</label>
+          <input type="file" id="uploadVideo" accept="video/*" />
+        </div>
+        <div style="display: flex; gap: 15px; margin-bottom: 20px;">
           <div style="flex: 1;">
-            <label>Target FPS:</label>
+            <label>Target FPS Ekstrak:</label>
             <input type="number" id="videoFps" value="10" min="1" max="30" />
           </div>
-          <div style="flex: 2;">
-             <label style="color: #ffaa00; font-size: 0.75rem; margin-top: 12px;">*Maks. 200 Frame.</label>
+          <div style="flex: 1;">
+            <label>Resolusi OLED:</label>
+            <select id="oledType1">
+              <option value="128x64">128×64 (0.96")</option>
+              <option value="128x32">128×32 (0.91")</option>
+              <option value="64x48">64×48 (Mini)</option>
+            </select>
           </div>
         </div>
       </div>
 
-      <div class="upload-box">
-        <h3 style="color: var(--primary);">🖼️ Image/Video Placement & Scale</h3>
+      <div id="imageContent" class="tab-content">
         <div class="control-group">
-          <label id="scaleLabel">Scale: 100%</label>
+          <label>Upload Image Frames (Multiple Files)</label>
+          <input type="file" id="uploadImages" accept="image/*" multiple />
+        </div>
+        <div class="control-group">
+          <label>Resolusi OLED:</label>
+          <select id="oledType2">
+            <option value="128x64">128×64 (0.96")</option>
+            <option value="128x32">128×32 (0.91")</option>
+            <option value="64x48">64×48 (Mini)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section-box">
+        <h3>🖼️ Penyesuaian Visual (Scale & Offset)</h3>
+        <div class="control-group">
+          <label id="scaleLabel">Scale / Ukuran: 100%</label>
           <input type="range" id="scale" min="10" max="200" value="100" />
         </div>
-        <div style="display: flex; gap: 10px;">
+        <div style="display: flex; gap: 15px; margin-bottom: 10px;">
           <div style="flex: 1;">
-            <label id="xOffsetLabel">X Offset: 0px</label>
+            <label id="xOffsetLabel">Geser X: 0px</label>
             <input type="range" id="xOffset" min="-128" max="128" value="0" />
           </div>
           <div style="flex: 1;">
-            <label id="yOffsetLabel">Y Offset: 0px</label>
+            <label id="yOffsetLabel">Geser Y: 0px</label>
             <input type="range" id="yOffset" min="-64" max="64" value="0" />
           </div>
         </div>
-        <p class="note" style="margin-top: 5px; color: #52525b;">*Ubah ini sebelum menekan tombol Generate.</p>
       </div>
 
       <div class="control-group">
         <label id="thresholdLabel">Threshold (Kontras Hitam/Putih): 127</label>
         <input type="range" id="threshold" min="0" max="255" value="127" />
       </div>
+
       <div class="control-group">
-        <label>Kecepatan Preview Layar (ms):</label>
+        <label>Kecepatan Animasi Layar (ms):</label>
         <input type="number" id="speed" value="80" step="10" />
       </div>
-      <button id="generateBtn">⚡ Generate C++ Code</button>
+
+      <button id="generateBtn" class="action-btn primary">⚡ GENERATE C++ CODE</button>
       <div id="status" class="status-badge" style="display: none;"></div>
     </div>
 
     <div class="card">
       <h2 class="preview-title">
         📺 Live Preview
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <select id="oledType" style="width: auto; padding: 5px; font-size: 0.8rem;">
-            <option value="128x64">128x64 (0.96" / 1.3")</option>
-            <option value="128x32">128x32 (0.91" Long)</option>
-            <option value="64x48">64x48 (0.66" Mini)</option>
-          </select>
-          <div class="oled-icon"></div>
-        </div>
+        <div class="oled-icon"></div>
       </h2>
       <div class="oled-bezel">
         <span class="oled-label" id="bezelLabel">SSD1306 128x64</span>
         <canvas id="oled" width="128" height="64"></canvas>
       </div>
       <p class="note">
-        *Preview akan terhenti (Pause) saat kamu menahan slider Threshold, Scale, atau Offset.
+        *Animasi akan otomatis Pause saat kamu menggeser slider Penyesuaian Visual atau Threshold agar kamu bisa melihat perubahannya dengan presisi.
       </p>
     </div>
 
     <div class="card" style="grid-column: 1 / -1;">
       <h2 class="code-title">
-        💻 Arduino / ESP32 PROGMEM C++ Header
+        💻 Arduino / ESP32 PROGMEM Code
         <div class="oled-icon"></div>
       </h2>
-      <textarea id="output" readonly placeholder="// Kode hexa C++ akan muncul di sini..."></textarea>
-      <button class="btn-secondary" onclick="copyToClipboard()">📋 Copy Code to Clipboard</button>
+      <textarea id="output" readonly placeholder="// Hasil ekstrak array hexa C++ akan muncul di sini..."></textarea>
+      <button class="action-btn" onclick="copyToClipboard()">📋 COPY CODE</button>
     </div>
   </div>
 
   <script>
+    // Inisialisasi Elemen
     const canvas = document.getElementById('oled');
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    
+    const tabVideoBtn = document.getElementById('tabVideoBtn');
+    const tabImageBtn = document.getElementById('tabImageBtn');
+    const videoContent = document.getElementById('videoContent');
+    const imageContent = document.getElementById('imageContent');
+    
     const uploadImagesBtn = document.getElementById('uploadImages');
     const uploadVideoBtn = document.getElementById('uploadVideo');
     const videoFpsInput = document.getElementById('videoFps');
+    
+    const oledType1 = document.getElementById('oledType1');
+    const oledType2 = document.getElementById('oledType2');
+    const bezelLabel = document.getElementById('bezelLabel');
+    
+    const scaleInput = document.getElementById('scale');
+    const xOffsetInput = document.getElementById('xOffset');
+    const yOffsetInput = document.getElementById('yOffset');
     const thresholdInput = document.getElementById('threshold');
     const speedInput = document.getElementById('speed');
-    const oledTypeInput = document.getElementById('oledType');
-    const bezelLabel = document.getElementById('bezelLabel');
+    
     const output = document.getElementById('output');
     const statusText = document.getElementById('status');
     const generateBtn = document.getElementById('generateBtn');
 
-    // BARU: Input untuk Skala dan Offset
-    const scaleInput = document.getElementById('scale');
-    const xOffsetInput = document.getElementById('xOffset');
-    const yOffsetInput = document.getElementById('yOffset');
-
     let framesData = []; 
     let animationInterval = null;
     let currentFrameIdx = 0;
-    
     let canvasW = 128;
     let canvasH = 64;
 
-    // EVENT LISTENER OLED TYPE
-    oledTypeInput.addEventListener('change', (e) => {
-      const [w, h] = e.target.value.split('x').map(Number);
-      canvasW = w;
-      canvasH = h;
-      canvas.width = w;
-      canvas.height = h;
+    // FUNGSI SWITCH TAB
+    function switchTab(tabName) {
+      if(animationInterval) clearInterval(animationInterval);
+      framesData = [];
+      ctx.clearRect(0, 0, canvasW, canvasH);
+      statusText.style.display = 'none';
+      uploadVideoBtn.value = "";
+      uploadImagesBtn.value = "";
+
+      if (tabName === 'video') {
+        tabVideoBtn.classList.add('active');
+        tabImageBtn.classList.remove('active');
+        videoContent.classList.add('active');
+        imageContent.classList.remove('active');
+      } else {
+        tabImageBtn.classList.add('active');
+        tabVideoBtn.classList.remove('active');
+        imageContent.classList.add('active');
+        videoContent.classList.remove('active');
+      }
+    }
+
+    // EVENT LISTENER OLED TYPE SINKRONISASI
+    function updateOledSize(e) {
+      const val = e.target.value;
+      oledType1.value = val;
+      oledType2.value = val;
+      const [w, h] = val.split('x').map(Number);
+      canvasW = w; canvasH = h;
+      canvas.width = w; canvas.height = h;
       bezelLabel.innerText = `SSD1306 ${w}x${h}`;
-      // Otomatis ubah min/max offset sesuai ukuran layar
+      
       xOffsetInput.min = -w; xOffsetInput.max = w;
       yOffsetInput.min = -h; yOffsetInput.max = h;
       if (framesData.length > 0) renderPreview();
-    });
+    }
+    oledType1.addEventListener('change', updateOledSize);
+    oledType2.addEventListener('change', updateOledSize);
 
-    // BARU: FUNGSI PAUSE/RESUME ANIMASI UNTUK SLIDER
+    // FUNGSI PAUSE/RESUME ANIMASI UNTUK SLIDER INTERACTION
     let isSliderInteracting = false;
     function pauseAnimation() { isSliderInteracting = true; if(animationInterval) clearInterval(animationInterval); }
     function resumeAnimation() { isSliderInteracting = false; if (framesData.length > 0) startAnimation(); }
 
-    // EVENT LISTENER THRESHOLD
     thresholdInput.addEventListener('mousedown', pauseAnimation); thresholdInput.addEventListener('touchstart', pauseAnimation);
     thresholdInput.addEventListener('input', () => {
-      document.getElementById('thresholdLabel').innerText = `Threshold: ${thresholdInput.value}`;
+      document.getElementById('thresholdLabel').innerText = `Threshold (Kontras Hitam/Putih): ${thresholdInput.value}`;
       if (framesData.length > 0) renderPreview();
     });
     thresholdInput.addEventListener('mouseup', resumeAnimation); thresholdInput.addEventListener('touchend', resumeAnimation);
 
-    // BARU: EVENT LISTENER UNTUK SKALA & OFFSET (FITUR YANG DIMINTA)
     scaleInput.addEventListener('mousedown', pauseAnimation); scaleInput.addEventListener('touchstart', pauseAnimation);
     scaleInput.addEventListener('input', () => {
-      document.getElementById('scaleLabel').innerText = `Scale: ${scaleInput.value}%`;
+      document.getElementById('scaleLabel').innerText = `Scale / Ukuran: ${scaleInput.value}%`;
       if (framesData.length > 0) renderPreview();
     });
     scaleInput.addEventListener('mouseup', resumeAnimation); scaleInput.addEventListener('touchend', resumeAnimation);
 
     xOffsetInput.addEventListener('mousedown', pauseAnimation); xOffsetInput.addEventListener('touchstart', pauseAnimation);
     xOffsetInput.addEventListener('input', () => {
-      document.getElementById('xOffsetLabel').innerText = `X Offset: ${xOffsetInput.value}px`;
+      document.getElementById('xOffsetLabel').innerText = `Geser X: ${xOffsetInput.value}px`;
       if (framesData.length > 0) renderPreview();
     });
     xOffsetInput.addEventListener('mouseup', resumeAnimation); xOffsetInput.addEventListener('touchend', resumeAnimation);
 
     yOffsetInput.addEventListener('mousedown', pauseAnimation); yOffsetInput.addEventListener('touchstart', pauseAnimation);
     yOffsetInput.addEventListener('input', () => {
-      document.getElementById('yOffsetLabel').innerText = `Y Offset: ${yOffsetInput.value}px`;
+      document.getElementById('yOffsetLabel').innerText = `Geser Y: ${yOffsetInput.value}px`;
       if (framesData.length > 0) renderPreview();
     });
     yOffsetInput.addEventListener('mouseup', resumeAnimation); yOffsetInput.addEventListener('touchend', resumeAnimation);
-
 
     speedInput.addEventListener('change', () => { if (framesData.length > 0) startAnimation(); });
 
@@ -424,7 +388,9 @@
     uploadImagesBtn.addEventListener('change', async (event) => {
       const files = Array.from(event.target.files);
       if (files.length === 0) return;
-      uploadVideoBtn.value = ""; framesData = []; showStatus("Memproses gambar...");
+      if(animationInterval) clearInterval(animationInterval);
+      framesData = []; showStatus("⏳ Memproses gambar...");
+      
       const loadPromises = files.map(file => {
         return new Promise((resolve) => {
           const reader = new FileReader(); reader.onload = (e) => { const img = new Image(); img.onload = () => resolve({ img, name: file.name }); img.src = e.target.result; }; reader.readAsDataURL(file);
@@ -436,28 +402,41 @@
     });
 
     // ==========================================
-    // LOGIKA 2: UPLOAD & EKSTRAK VIDEO (VERSI MOBILE ANTI-BLOKIR)
+    // LOGIKA 2: UPLOAD VIDEO (MOBILE SAFE)
     // ==========================================
     uploadVideoBtn.addEventListener('change', async (event) => {
       const file = event.target.files[0];
       if (!file) return;
-      uploadImagesBtn.value = ""; if(animationInterval) clearInterval(animationInterval); framesData = []; showStatus("🎥 Membangunkan pemutar video...");
-      const targetFps = parseInt(videoFpsInput.value) || 10; const step = 1 / targetFps; const MAX_FRAMES = 200;
+      if(animationInterval) clearInterval(animationInterval);
+      framesData = []; showStatus("⏳ Membangunkan pemutar video...");
+      
+      const targetFps = parseInt(videoFpsInput.value) || 10; 
+      const step = 1 / targetFps; const MAX_FRAMES = 200;
+      
       const video = document.createElement('video');
-      video.setAttribute('playsinline', 'true'); video.setAttribute('webkit-playsinline', 'true'); video.setAttribute('muted', 'true'); video.setAttribute('autoplay', 'false'); video.muted = true; video.playsInline = true; video.crossOrigin = "anonymous"; video.style.display = "none"; document.body.appendChild(video); video.src = URL.createObjectURL(file);
+      video.setAttribute('playsinline', 'true'); video.setAttribute('webkit-playsinline', 'true'); video.setAttribute('muted', 'true'); video.setAttribute('autoplay', 'false'); video.muted = true; video.playsInline = true; video.crossOrigin = "anonymous"; video.style.display = "none"; 
+      document.body.appendChild(video); 
+      video.src = URL.createObjectURL(file);
+
       const tempCanvas = document.createElement('canvas'); const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
-      try { await video.play(); video.pause(); } catch (e) {} // Trik mobile
+      try { await video.play(); video.pause(); } catch (e) {}
+      
       video.addEventListener('loadeddata', () => {
         const duration = video.duration; let currentTime = 0.001;
         video.addEventListener('seeked', async () => {
           tempCanvas.width = canvasW; tempCanvas.height = canvasH;
-          // BARU: Gunakan fungsi draw Bitmap Kustom saat ekstrak video agar skalanya tersimpan
-          drawBitmapKustom(tempCtx, video, canvasW, canvasH);
+          drawBitmapKustom(tempCtx, video, canvasW, canvasH); // Ambil frame raw (tanpa styling) dulu jika ingin diedit live, tapi di sini kita simpan mentahnya dengan draw kustom untuk simplifikasi, tunggu...
+          
+          // PERBAIKAN: Ekstrak original frame size agar fitur Scale & Offset bekerja sempurna secara Live
+          tempCanvas.width = video.videoWidth; tempCanvas.height = video.videoHeight;
+          tempCtx.drawImage(video, 0, 0);
+
           const img = new Image(); img.src = tempCanvas.toDataURL('image/jpeg', 1.0);
           await new Promise(r => img.onload = r); framesData.push({ img: img, name: `vid_frame_${framesData.length}` });
+          
           currentTime += step;
           if (currentTime <= duration && framesData.length < MAX_FRAMES) {
-            const progress = Math.floor((currentTime / duration) * 100); showStatus(`⏳ Mengekstrak frame... ${progress}% (${framesData.length} Frame)`); video.currentTime = currentTime;
+            const progress = Math.floor((currentTime / duration) * 100); showStatus(`⏳ Mengekstrak video... ${progress}% (${framesData.length} Frame)`); video.currentTime = currentTime;
           } else {
             showStatus(`✅ Sukses! ${framesData.length} Frame diekstrak.`); document.body.removeChild(video);
             speedInput.value = Math.floor(1000 / targetFps); startAnimation();
@@ -469,12 +448,8 @@
     });
 
     // ==========================================
-    // LOGIKA RENDER & GENERATE CODE
+    // LOGIKA RENDER & GAMBAR CUSTOM
     // ==========================================
-    function renderPreview() { if (framesData.length === 0) return; drawToCanvas(framesData[currentFrameIdx].img); }
-
-    // BARU: FUNGSI HITUNG & GAMBAR BITMAP KUSTOM (FITUR YANG DIMINTA)
-    // Fungsi ini menghitung posisi dan skala berdasarkan input slider
     function drawBitmapKustom(context, source, width, height) {
         context.fillStyle = "black";
         context.fillRect(0, 0, width, height);
@@ -483,30 +458,24 @@
         const xOff = parseInt(xOffsetInput.value);
         const yOff = parseInt(yOffsetInput.value);
 
-        let sWidth, sHeight;
-        if (source instanceof HTMLVideoElement) { sWidth = source.videoWidth; sHeight = source.videoHeight; }
-        else { sWidth = source.width; sHeight = source.height; }
+        let sWidth = source.width; let sHeight = source.height;
 
-        // Hitung skala untuk 'Fit' secara vertikal sebagai standar
-        const baseScale = height / sHeight;
-        
-        // Terapkan skala kustom dari user
+        const baseScale = Math.min(width / sWidth, height / sHeight); 
         const finalScale = baseScale * scale;
 
         const dWidth = sWidth * finalScale;
         const dHeight = sHeight * finalScale;
 
-        // Hitung posisi centering + offset kustom
         const dx = (width - dWidth) / 2 + xOff;
         const dy = (height - dHeight) / 2 + yOff;
 
         context.drawImage(source, dx, dy, dWidth, dHeight);
     }
 
-    function drawToCanvas(image) {
-      // Saat render preview gambar sekunder (loop animasi), gunakan fungsi kustom
-      drawBitmapKustom(ctx, image, canvasW, canvasH);
+    function renderPreview() { if (framesData.length === 0) return; drawToCanvas(framesData[currentFrameIdx].img); }
 
+    function drawToCanvas(image) {
+      drawBitmapKustom(ctx, image, canvasW, canvasH);
       const imageData = ctx.getImageData(0, 0, canvasW, canvasH);
       const data = imageData.data;
       const threshold = parseInt(thresholdInput.value);
@@ -524,15 +493,14 @@
       animationInterval = setInterval(() => { if (framesData.length === 0 || isSliderInteracting) return; renderPreview(); currentFrameIdx = (currentFrameIdx + 1) % framesData.length; }, parseInt(speedInput.value));
     }
 
-    // GENERATE CODE LOGIC (Diperbarui agar menggunakan bitmap kustom)
+    // GENERATE CODE LOGIC
     generateBtn.addEventListener('click', () => {
-      if (framesData.length === 0) { alert("Upload gambar atau video terlebih dahulu!"); return; }
+      if (framesData.length === 0) { alert("Upload media terlebih dahulu!"); return; }
       showStatus("⏳ Generating C++ Code...");
       setTimeout(() => {
         let cppCode = `// ==========================================\n// Monochromatic OLED Animation Array\n// Resolution: ${canvasW}x${canvasH} | Frames: ${framesData.length}\n// ==========================================\n\n#include <pgmspace.h>\n\nconst int FRAME_COUNT = ${framesData.length};\nconst int FRAME_WIDTH = ${canvasW};\nconst int FRAME_HEIGHT = ${canvasH};\n\n`;
         let arrayNames = [];
         framesData.forEach((frame, idx) => {
-          // Ganti cara generate: gunakan BitmapKustom agar skala/posisi tersimpan ke array hexa
           drawBitmapKustom(ctx, frame.img, canvasW, canvasH);
           const imgData = ctx.getImageData(0, 0, canvasW, canvasH).data;
           const threshold = parseInt(thresholdInput.value);
@@ -547,8 +515,8 @@
       }, 50);
     });
 
-    function copyToClipboard() { if (!output.value) return; output.select(); document.execCommand('copy'); const btn = document.querySelector('.btn-secondary'); const originalText = btn.innerText; btn.innerText = "✅ Tersalin!"; setTimeout(() => { btn.innerText = originalText; }, 2000); }
-    function showStatus(msg) { statusText.style.display = 'inline-flex'; statusText.innerText = msg; }
+    function copyToClipboard() { if (!output.value) return; output.select(); document.execCommand('copy'); const btn = document.querySelector('.action-btn:last-child'); const originalText = btn.innerText; btn.innerText = "✅ TERSALIN!"; setTimeout(() => { btn.innerText = originalText; }, 2000); }
+    function showStatus(msg) { statusText.style.display = 'flex'; statusText.innerHTML = `<span style="font-size:16px; margin-right:8px;"></span> ${msg}`; }
   </script>
 </body>
 </html>
