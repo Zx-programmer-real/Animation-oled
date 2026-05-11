@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OLED Video Converter Studio by The Zx</title>
+  <title>OLED Animation Studio</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Fira+Code:wght@400;500&display=swap');
 
@@ -15,7 +15,6 @@
       --border: #27272a;
       --text: #e4e4e7;
       --text-muted: #a1a1aa;
-      --danger: #ff4444;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -82,7 +81,10 @@
     .oled-icon::after {
       content: '';
       position: absolute;
-      top: 2px; left: 2px; right: 2px; bottom: 2px;
+      top: 2px;
+      left: 2px;
+      right: 2px;
+      bottom: 2px;
       background: rgba(0, 255, 204, 0.1);
       border: 1px solid rgba(0, 255, 204, 0.2);
       color: var(--primary);
@@ -94,62 +96,43 @@
       letter-spacing: -0.5px;
     }
 
-    h2.settings-title .oled-icon::after { content: 'INP'; }
+    h2.settings-title .oled-icon::after { content: 'CONF.'; }
     h2.code-title .oled-icon::after { content: 'PROG.'; font-size: 7px; text-shadow: 0 0 5px var(--primary); }
-    h2.preview-title .oled-icon { background: repeating-linear-gradient(0deg, #000, #000 2px, rgba(0, 255, 204, 0.1) 2px, rgba(0, 255, 204, 0.1) 4px); }
+    h2.preview-title .oled-icon { 
+      background: repeating-linear-gradient(0deg, #000, #000 2px, rgba(0, 255, 204, 0.1) 2px, rgba(0, 255, 204, 0.1) 4px);
+    }
     h2.preview-title .oled-icon::after { display: none; }
 
-    /* SEGMENTED CONTROL (TABS) */
-    .segmented-control {
-      display: flex;
-      background: #000;
-      border: 1px solid var(--border);
+    .control-group { margin-bottom: 20px; }
+    
+    .upload-box {
+      background: #09090b;
+      border: 1px dashed #52525b;
       border-radius: 8px;
-      overflow: hidden;
-      margin-bottom: 20px;
+      padding: 15px;
+      margin-bottom: 15px;
     }
-    .segmented-control input[type="radio"] { display: none; }
-    .segmented-control label {
-      flex: 1;
-      text-align: center;
-      padding: 12px;
-      cursor: pointer;
-      color: var(--text-muted);
-      transition: 0.3s;
-      font-weight: bold;
-      font-size: 0.9rem;
-      margin-bottom: 0;
-    }
-    .segmented-control input[type="radio"]:checked + label {
-      background: var(--primary);
-      color: #000;
-    }
+    .upload-box h3 { font-size: 0.9rem; color: #fff; margin-bottom: 10px; }
 
-    .control-group { margin-bottom: 15px; }
-    .control-group label.title {
+    label {
       display: block;
       margin-bottom: 8px;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       font-weight: 600;
       color: var(--text-muted);
     }
 
-    input[type="file"], select, input[type="number"] {
+    input[type="file"], select {
       width: 100%;
-      padding: 10px;
-      background: #09090b;
+      padding: 8px;
+      background: #18181b;
       border: 1px solid var(--border);
-      border-radius: 8px;
-      color: #fff;
+      border-radius: 6px;
+      color: var(--text-muted);
+      cursor: pointer;
       font-family: inherit;
-      outline: none;
-      transition: border 0.3s ease;
     }
-    input[type="file"]:hover, select:hover, input[type="number"]:focus { border-color: var(--primary); }
-    input[type="file"] { border: 1px dashed #52525b; cursor: pointer; color: var(--primary); }
-    
-    .row { display: flex; gap: 10px; }
-    .row > div { flex: 1; }
+    select { color: #fff; font-weight: bold; }
 
     input[type="range"] {
       -webkit-appearance: none;
@@ -171,6 +154,15 @@
       box-shadow: 0 0 10px var(--primary);
     }
 
+    input[type="number"] {
+      width: 100%;
+      padding: 10px 12px;
+      background: #09090b;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: #fff;
+    }
+
     button {
       width: 100%;
       padding: 14px;
@@ -183,10 +175,8 @@
       cursor: pointer;
       transition: all 0.2s ease;
       text-transform: uppercase;
-      margin-top: 10px;
     }
     button:hover { background: var(--primary-hover); transform: translateY(-2px); }
-    button:disabled { background: #3f3f46; color: #a1a1aa; cursor: not-allowed; transform: none; }
 
     .btn-secondary { background: #27272a; color: #fff; margin-top: 15px; }
     .btn-secondary:hover { background: #3f3f46; }
@@ -215,11 +205,12 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 180px;
+      min-height: 150px;
     }
     .oled-label {
       position: absolute;
-      top: -10px; left: 15px;
+      top: -10px;
+      left: 15px;
       background: var(--card-bg);
       padding: 0 5px;
       font-size: 10px;
@@ -232,6 +223,7 @@
       background: #000;
       border-radius: 2px;
       box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
       transform: scale(2); 
       transform-origin: center;
       margin: 30px 0; 
@@ -253,7 +245,7 @@
     textarea::-webkit-scrollbar-track { background: #09090b; border-radius: 4px; }
     textarea::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
 
-    .note { font-size: 0.8rem; color: #71717a; margin-top: 12px; text-align: center; line-height: 1.4; }
+    .note { font-size: 0.8rem; color: #71717a; margin-top: 12px; text-align: center; }
   </style>
 </head>
 <body>
@@ -263,72 +255,68 @@
   <div class="container">
     <div class="card">
       <h2 class="settings-title">
-        ⚙️ Input Media
+        ⚙️ Settings & Upload
         <div class="oled-icon"></div>
       </h2>
 
-      <div class="segmented-control">
-        <input type="radio" id="modeVideo" name="inputMode" value="video" checked>
-        <label for="modeVideo">MP4 Video</label>
-        <input type="radio" id="modeFrames" name="inputMode" value="frames">
-        <label for="modeFrames">Image Frames</label>
+      <div class="upload-box">
+        <h3>A. Upload Frame Gambar (Multiple)</h3>
+        <input type="file" id="uploadImages" accept="image/*" multiple />
       </div>
 
-      <div id="videoInputGroup" class="control-group">
-        <label class="title">Upload Video (Maks 15-20 Detik)</label>
-        <input type="file" id="uploadVideo" accept="video/mp4,video/webm" />
-      </div>
-
-      <div id="frameInputGroup" class="control-group" style="display: none;">
-        <label class="title">Upload Multi Gambar (Pilih Banyak)</label>
-        <input type="file" id="uploadFrames" accept="image/*" multiple />
-      </div>
-      
-      <div class="row">
-        <div class="control-group">
-          <label class="title" id="fpsLabel">Target FPS Ekstrak:</label>
-          <input type="number" id="targetFps" value="10" min="1" max="60" />
-        </div>
-        <div class="control-group">
-          <label class="title">Resolusi OLED:</label>
-          <select id="oledType">
-            <option value="128x64">128x64 (0.96")</option>
-            <option value="128x32">128x32 (0.91")</option>
-            <option value="64x48">64x48 (0.66")</option>
-          </select>
+      <div class="upload-box">
+        <h3>B. Upload Video (.mp4 / .webm)</h3>
+        <input type="file" id="uploadVideo" accept="video/*" />
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+          <div style="flex: 1;">
+            <label>Target FPS:</label>
+            <input type="number" id="videoFps" value="10" min="1" max="30" />
+          </div>
+          <div style="flex: 2;">
+             <label style="color: #ffaa00; font-size: 0.75rem; margin-top: 12px;">*Maks. 200 Frame untuk mencegah memory crash.</label>
+          </div>
         </div>
       </div>
 
       <div class="control-group">
-        <label class="title" id="thresholdLabel">Threshold (Kontras Hitam/Putih): 127</label>
+        <label id="thresholdLabel">Threshold (Kontras Hitam/Putih): 127</label>
         <input type="range" id="threshold" min="0" max="255" value="127" />
       </div>
-
-      <button id="generateBtn" disabled>Generate C++ Code</button>
+      <div class="control-group">
+        <label>Kecepatan Preview Layar (ms):</label>
+        <input type="number" id="speed" value="80" step="10" />
+      </div>
+      <button id="generateBtn">⚡ Generate C++ Code</button>
       <div id="status" class="status-badge" style="display: none;"></div>
     </div>
 
     <div class="card">
       <h2 class="preview-title">
         📺 Live Preview
-        <div class="oled-icon"></div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <select id="oledType" style="width: auto; padding: 5px; font-size: 0.8rem;">
+            <option value="128x64">128x64 (0.96" / 1.3")</option>
+            <option value="128x32">128x32 (0.91" Long)</option>
+            <option value="64x48">64x48 (0.66" Mini)</option>
+          </select>
+          <div class="oled-icon"></div>
+        </div>
       </h2>
       <div class="oled-bezel">
         <span class="oled-label" id="bezelLabel">SSD1306 128x64</span>
         <canvas id="oled" width="128" height="64"></canvas>
       </div>
       <p class="note">
-        *Preview akan terhenti (Pause) saat kamu menahan slider Threshold.<br>
-        *Kecepatan preview disesuaikan dengan input FPS di atas.
+        *Preview akan terhenti (Pause) saat kamu menahan slider Threshold agar perubahannya terlihat jelas.
       </p>
     </div>
 
     <div class="card" style="grid-column: 1 / -1;">
       <h2 class="code-title">
-        Arduino / ESP32 PROGMEM Header
+        💻 Arduino / ESP32 PROGMEM C++ Header
         <div class="oled-icon"></div>
       </h2>
-      <textarea id="output" readonly placeholder="// Upload media untuk menghasilkan kode C++..."></textarea>
+      <textarea id="output" readonly placeholder="// Kode hexa C++ akan muncul di sini setelah menekan tombol Generate..."></textarea>
       <button class="btn-secondary" onclick="copyToClipboard()">📋 Copy Code to Clipboard</button>
     </div>
   </div>
@@ -336,18 +324,11 @@
   <script>
     const canvas = document.getElementById('oled');
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    
-    const modeVideoBtn = document.getElementById('modeVideo');
-    const modeFramesBtn = document.getElementById('modeFrames');
-    const videoInputGroup = document.getElementById('videoInputGroup');
-    const frameInputGroup = document.getElementById('frameInputGroup');
-    
-    const uploadVideo = document.getElementById('uploadVideo');
-    const uploadFrames = document.getElementById('uploadFrames');
-    
-    const fpsLabel = document.getElementById('fpsLabel');
-    const targetFpsInput = document.getElementById('targetFps');
+    const uploadImagesBtn = document.getElementById('uploadImages');
+    const uploadVideoBtn = document.getElementById('uploadVideo');
+    const videoFpsInput = document.getElementById('videoFps');
     const thresholdInput = document.getElementById('threshold');
+    const speedInput = document.getElementById('speed');
     const oledTypeInput = document.getElementById('oledType');
     const bezelLabel = document.getElementById('bezelLabel');
     const output = document.getElementById('output');
@@ -361,22 +342,7 @@
     let canvasW = 128;
     let canvasH = 64;
 
-    // --- TOGGLE LOGIC ---
-    document.querySelectorAll('input[name="inputMode"]').forEach(radio => {
-      radio.addEventListener('change', (e) => {
-        if(e.target.value === 'video') {
-          videoInputGroup.style.display = 'block';
-          frameInputGroup.style.display = 'none';
-          fpsLabel.innerText = 'Target FPS Ekstrak:';
-        } else {
-          videoInputGroup.style.display = 'none';
-          frameInputGroup.style.display = 'block';
-          fpsLabel.innerText = 'Kecepatan Animasi (FPS):';
-        }
-      });
-    });
-
-    // --- RESOLUTION LOGIC ---
+    // EVENT LISTENER OLED TYPE
     oledTypeInput.addEventListener('change', (e) => {
       const [w, h] = e.target.value.split('x').map(Number);
       canvasW = w;
@@ -387,39 +353,31 @@
       if (framesData.length > 0) renderPreview();
     });
 
-    // --- THRESHOLD LOGIC ---
+    // EVENT LISTENER THRESHOLD (Pause Animasi Saat Digeser)
     let isDraggingThreshold = false;
-    ['mousedown', 'touchstart'].forEach(evt => 
-      thresholdInput.addEventListener(evt, () => {
-        isDraggingThreshold = true;
-        if(animationInterval) clearInterval(animationInterval);
-      })
-    );
+    thresholdInput.addEventListener('mousedown', () => { isDraggingThreshold = true; if(animationInterval) clearInterval(animationInterval); });
+    thresholdInput.addEventListener('touchstart', () => { isDraggingThreshold = true; if(animationInterval) clearInterval(animationInterval); });
     thresholdInput.addEventListener('input', () => {
       document.getElementById('thresholdLabel').innerText = `Threshold (Kontras Hitam/Putih): ${thresholdInput.value}`;
       if (framesData.length > 0) renderPreview();
     });
-    ['mouseup', 'touchend'].forEach(evt => 
-      thresholdInput.addEventListener(evt, () => {
-        isDraggingThreshold = false;
-        if (framesData.length > 0) startAnimation();
-      })
-    );
+    thresholdInput.addEventListener('mouseup', () => { isDraggingThreshold = false; if (framesData.length > 0) startAnimation(); });
+    thresholdInput.addEventListener('touchend', () => { isDraggingThreshold = false; if (framesData.length > 0) startAnimation(); });
 
-    targetFpsInput.addEventListener('change', () => {
+    speedInput.addEventListener('change', () => {
         if (framesData.length > 0) startAnimation();
     });
 
-    // --- 1. LOGIC: UPLOAD MULTI FRAMES (GAMBAR) ---
-    uploadFrames.addEventListener('change', async (event) => {
+    // ==========================================
+    // LOGIKA 1: UPLOAD GAMBAR
+    // ==========================================
+    uploadImagesBtn.addEventListener('change', async (event) => {
       const files = Array.from(event.target.files);
       if (files.length === 0) return;
-
-      // Kosongkan input video agar tidak bentrok
-      uploadVideo.value = ""; 
+      
+      uploadVideoBtn.value = ""; 
 
       framesData = [];
-      generateBtn.disabled = true;
       showStatus("Memproses gambar...");
 
       const loadPromises = files.map(file => {
@@ -437,49 +395,60 @@
       framesData = await Promise.all(loadPromises);
       framesData.sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true, sensitivity: 'base'}));
 
-      showStatus(`✅ Sukses! ${framesData.length} Frame berhasil dimuat.`);
-      generateBtn.disabled = false;
+      showStatus(`✅ ${framesData.length} Frame gambar dimuat!`);
       startAnimation();
     });
 
-    // --- 2. LOGIC: UPLOAD VIDEO (MP4) ---
-    uploadVideo.addEventListener('change', async (event) => {
+    // ==========================================
+    // LOGIKA 2: UPLOAD & EKSTRAK VIDEO (VERSI MOBILE ANTI-BLOKIR)
+    // ==========================================
+    uploadVideoBtn.addEventListener('change', async (event) => {
       const file = event.target.files[0];
       if (!file) return;
 
-      // Kosongkan input gambar agar tidak bentrok
-      uploadFrames.value = "";
-      
+      uploadImagesBtn.value = "";
       if(animationInterval) clearInterval(animationInterval);
       framesData = [];
-      generateBtn.disabled = true;
       showStatus("🎥 Membangunkan pemutar video...");
 
-      const targetFps = parseInt(targetFpsInput.value) || 10;
+      const targetFps = parseInt(videoFpsInput.value) || 10;
       const step = 1 / targetFps;
-      const MAX_FRAMES = 200; 
+      const MAX_FRAMES = 200;
 
       const video = document.createElement('video');
-      video.src = URL.createObjectURL(file);
+      
+      // Atribut WAJIB untuk memaksa browser HP memproses video di background
+      video.setAttribute('playsinline', 'true');
+      video.setAttribute('webkit-playsinline', 'true');
+      video.setAttribute('muted', 'true');
+      video.setAttribute('autoplay', 'false');
       video.muted = true;
       video.playsInline = true;
-      video.preload = "auto"; 
       video.crossOrigin = "anonymous";
-
+      
       video.style.display = "none";
       document.body.appendChild(video);
+
+      video.src = URL.createObjectURL(file);
 
       const tempCanvas = document.createElement('canvas');
       const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
 
-      video.addEventListener('loadedmetadata', () => {
+      // Trik "Sengatan Listrik" untuk HP: Pura-pura di-play lalu pause
+      try {
+        await video.play();
+        video.pause();
+      } catch (e) {
+        // Abaikan jika browser memblokir play()
+      }
+
+      video.addEventListener('loadeddata', () => {
         const duration = video.duration;
-        let currentTime = 0;
+        let currentTime = 0.001; // Mulai dari 0.001 (menghindari error frame 0 di HP)
 
         video.addEventListener('seeked', async () => {
           tempCanvas.width = canvasW;
           tempCanvas.height = canvasH;
-          
           tempCtx.drawImage(video, 0, 0, canvasW, canvasH);
           
           const img = new Image();
@@ -496,63 +465,70 @@
             video.currentTime = currentTime;
           } else {
             showStatus(`✅ Sukses! ${framesData.length} Frame diekstrak dari video.`);
-            document.body.removeChild(video);
-            
-            generateBtn.disabled = false;
+            document.body.removeChild(video); // Bersihkan DOM dari video
+            speedInput.value = Math.floor(1000 / targetFps); 
             startAnimation();
           }
         });
 
-        video.currentTime = 0;
+        // Picu pencarian frame pertama
+        video.currentTime = currentTime;
       });
 
       video.load();
     });
 
-    // --- PREVIEW & ANIMATION ---
+    // ==========================================
+    // LOGIKA RENDER & GENERATE CODE
+    // ==========================================
     function renderPreview() {
       if (framesData.length === 0) return;
-      
+      drawToCanvas(framesData[currentFrameIdx].img);
+    }
+
+    function drawToCanvas(image) {
       ctx.fillStyle = "black";
       ctx.fillRect(0, 0, canvasW, canvasH);
-      ctx.drawImage(framesData[currentFrameIdx].img, 0, 0, canvasW, canvasH);
+      ctx.drawImage(image, 0, 0, canvasW, canvasH);
 
       const imageData = ctx.getImageData(0, 0, canvasW, canvasH);
       const data = imageData.data;
       const threshold = parseInt(thresholdInput.value);
 
+      // Hitam Putih Murni untuk OLED
       for (let i = 0; i < data.length; i += 4) {
         const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
         const val = avg > threshold ? 255 : 0;
-        data[i] = val;         
-        data[i + 1] = val;     
-        data[i + 2] = val;     
+        
+        data[i] = val;         // R
+        data[i + 1] = val;     // G
+        data[i + 2] = val;     // B
       }
       ctx.putImageData(imageData, 0, 0);
     }
 
     function startAnimation() {
       if (animationInterval) clearInterval(animationInterval);
-      const targetFps = parseInt(targetFpsInput.value) || 10;
-      const msPerFrame = 1000 / targetFps;
       
       animationInterval = setInterval(() => {
         if (framesData.length === 0) return;
         renderPreview();
         currentFrameIdx = (currentFrameIdx + 1) % framesData.length;
-      }, msPerFrame);
+      }, parseInt(speedInput.value));
     }
 
-    // --- CODE GENERATOR ---
     generateBtn.addEventListener('click', () => {
-      if (framesData.length === 0) return;
+      if (framesData.length === 0) {
+        alert("Upload gambar atau video terlebih dahulu!");
+        return;
+      }
+
       showStatus("⏳ Generating C++ Code...");
 
       setTimeout(() => {
         let cppCode = `// ==========================================\n`;
-        cppCode += `// OLED Video Animation (Generated via Studio)\n`;
+        cppCode += `// Monochromatic OLED Animation Array (Generated via Studio)\n`;
         cppCode += `// Resolution: ${canvasW}x${canvasH} | Total Frames: ${framesData.length}\n`;
-        cppCode += `// Target FPS: ${targetFpsInput.value} FPS\n`;
         cppCode += `// ==========================================\n\n`;
         cppCode += `#include <pgmspace.h>\n\n`;
         cppCode += `const int FRAME_COUNT = ${framesData.length};\n`;
@@ -582,9 +558,10 @@
               for (let bit = 0; bit < 8; bit++) {
                 const y = (page * 8) + bit;
                 const pos = (y * canvasW + x) * 4;
+                
                 const avg = (imgData[pos] + imgData[pos + 1] + imgData[pos + 2]) / 3;
                 if (avg > threshold) {
-                  byte |= (1 << bit); 
+                  byte |= (1 << bit);
                 }
               }
               bytes.push("0x" + byte.toString(16).padStart(2, '0').toUpperCase());
@@ -620,13 +597,6 @@
     function showStatus(msg) {
       statusText.style.display = 'inline-flex';
       statusText.innerText = msg;
-      if(msg.includes("Error") || msg.includes("Crash")) {
-          statusText.style.color = "var(--danger)";
-          statusText.style.borderColor = "var(--danger)";
-      } else {
-          statusText.style.color = "var(--primary)";
-          statusText.style.borderColor = "rgba(0, 255, 204, 0.2)";
-      }
     }
   </script>
 </body>
