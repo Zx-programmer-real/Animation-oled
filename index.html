@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OLED Video Converter Studio</title>
   <title>OLED Video Converter Studio by The Zx</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Fira+Code:wght@400;500&display=swap');
@@ -336,12 +335,13 @@
 
   <script>
     const canvas = document.getElementById('oled');
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     
     const modeVideoBtn = document.getElementById('modeVideo');
     const modeFramesBtn = document.getElementById('modeFrames');
     const videoInputGroup = document.getElementById('videoInputGroup');
     const frameInputGroup = document.getElementById('frameInputGroup');
+    
     const uploadVideo = document.getElementById('uploadVideo');
     const uploadFrames = document.getElementById('uploadFrames');
     
@@ -415,6 +415,9 @@
       const files = Array.from(event.target.files);
       if (files.length === 0) return;
 
+      // Kosongkan input video agar tidak bentrok
+      uploadVideo.value = ""; 
+
       framesData = [];
       generateBtn.disabled = true;
       showStatus("Memproses gambar...");
@@ -440,21 +443,19 @@
     });
 
     // --- 2. LOGIC: UPLOAD VIDEO (MP4) ---
-    // ==========================================
-    // LOGIKA 2: UPLOAD & EKSTRAK VIDEO (DIJAMIN JALAN DI HP)
-    // ==========================================
-    uploadVideoBtn.addEventListener('change', async (event) => {
+    uploadVideo.addEventListener('change', async (event) => {
       const file = event.target.files[0];
       if (!file) return;
 
       // Kosongkan input gambar agar tidak bentrok
-      uploadImagesBtn.value = "";
+      uploadFrames.value = "";
       
       if(animationInterval) clearInterval(animationInterval);
       framesData = [];
+      generateBtn.disabled = true;
       showStatus("🎥 Membangunkan pemutar video...");
 
-      const targetFps = parseInt(videoFpsInput.value) || 10;
+      const targetFps = parseInt(targetFpsInput.value) || 10;
       const step = 1 / targetFps;
       const MAX_FRAMES = 200; 
 
@@ -462,17 +463,15 @@
       video.src = URL.createObjectURL(file);
       video.muted = true;
       video.playsInline = true;
-      video.preload = "auto"; // Paksa browser untuk memuat memori
+      video.preload = "auto"; 
       video.crossOrigin = "anonymous";
 
-      // TRIK WAJIB UNTUK BROWSER HP: Masukkan video ke halaman web tapi sembunyikan
       video.style.display = "none";
       document.body.appendChild(video);
 
       const tempCanvas = document.createElement('canvas');
       const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
 
-      // Gunakan 'loadedmetadata' bukan 'loadeddata' agar HP merespons lebih cepat
       video.addEventListener('loadedmetadata', () => {
         const duration = video.duration;
         let currentTime = 0;
@@ -497,21 +496,19 @@
             video.currentTime = currentTime;
           } else {
             showStatus(`✅ Sukses! ${framesData.length} Frame diekstrak dari video.`);
-            // Bersihkan elemen video dari HP agar tidak menuhin memori
             document.body.removeChild(video);
             
-            speedInput.value = Math.floor(1000 / targetFps); 
+            generateBtn.disabled = false;
             startAnimation();
           }
         });
 
-        // Mulai proses ekstraksi
         video.currentTime = 0;
       });
 
-      // Pancingan akhir agar mesin video di HP mau menyala
       video.load();
     });
+
     // --- PREVIEW & ANIMATION ---
     function renderPreview() {
       if (framesData.length === 0) return;
