@@ -304,6 +304,11 @@
         <input type="range" id="threshold" min="0" max="255" value="127" />
       </div>
 
+      <div class="control-group" style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+        <input type="checkbox" id="invertColors" style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--primary);" />
+        <label for="invertColors" class="title" style="margin-bottom: 0; cursor: pointer;">Invert Colors (Balik Warna)</label>
+      </div>
+
       <button id="generateBtn" disabled>Generate C++ Code</button>
       <div id="status" class="status-badge" style="display: none;"></div>
     </div>
@@ -348,6 +353,7 @@
     const fpsLabel = document.getElementById('fpsLabel');
     const targetFpsInput = document.getElementById('targetFps');
     const thresholdInput = document.getElementById('threshold');
+    const invertInput = document.getElementById('invertColors'); // VAR BARU INVERT
     const oledTypeInput = document.getElementById('oledType');
     const bezelLabel = document.getElementById('bezelLabel');
     const output = document.getElementById('output');
@@ -387,7 +393,7 @@
       if (framesData.length > 0) renderPreview();
     });
 
-    // --- THRESHOLD LOGIC ---
+    // --- THRESHOLD & INVERT LOGIC ---
     let isDraggingThreshold = false;
     ['mousedown', 'touchstart'].forEach(evt => 
       thresholdInput.addEventListener(evt, () => {
@@ -405,6 +411,11 @@
         if (framesData.length > 0) startAnimation();
       })
     );
+
+    // Event Invert Colors
+    invertInput.addEventListener('change', () => {
+      if (framesData.length > 0) renderPreview();
+    });
 
     targetFpsInput.addEventListener('change', () => {
         if (framesData.length > 0) startAnimation();
@@ -520,10 +531,16 @@
       const imageData = ctx.getImageData(0, 0, canvasW, canvasH);
       const data = imageData.data;
       const threshold = parseInt(thresholdInput.value);
+      const isInverted = invertInput.checked; // CEK KONDISI INVERT
 
       for (let i = 0; i < data.length; i += 4) {
         const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-        const val = avg > threshold ? 255 : 0;
+        
+        let isWhite = avg > threshold;
+        if (isInverted) isWhite = !isWhite; // Logika invert
+
+        const val = isWhite ? 255 : 0;
+
         data[i] = val;         
         data[i + 1] = val;     
         data[i + 2] = val;     
@@ -549,10 +566,12 @@
       showStatus("⏳ Generating C++ Code...");
 
       setTimeout(() => {
+        const isInverted = invertInput.checked; // SIMPAN STATUS INVERT
+
         let cppCode = `// ==========================================\n`;
-        cppCode += `// OLED Video Animation (Generated via Studio)\n`;
+        cppCode += `// OLED Video Animation (Generated via Studio by The Zx)\n`;
         cppCode += `// Resolution: ${canvasW}x${canvasH} | Total Frames: ${framesData.length}\n`;
-        cppCode += `// Target FPS: ${targetFpsInput.value} FPS\n`;
+        cppCode += `// Target FPS: ${targetFpsInput.value} FPS | Inverted: ${isInverted ? 'Yes' : 'No'}\n`;
         cppCode += `// ==========================================\n\n`;
         cppCode += `#include <pgmspace.h>\n\n`;
         cppCode += `const int FRAME_COUNT = ${framesData.length};\n`;
@@ -582,8 +601,13 @@
               for (let bit = 0; bit < 8; bit++) {
                 const y = (page * 8) + bit;
                 const pos = (y * canvasW + x) * 4;
+                
                 const avg = (imgData[pos] + imgData[pos + 1] + imgData[pos + 2]) / 3;
-                if (avg > threshold) {
+                
+                let isWhite = avg > threshold;
+                if (isInverted) isWhite = !isWhite; // Balik logika jika invert dicentang
+
+                if (isWhite) {
                   byte |= (1 << bit); 
                 }
               }
