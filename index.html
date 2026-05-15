@@ -3,436 +3,280 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OLED Animation Studio by The Zx</title>
+  <title>OLED Animation Studio — Fixed Pro by Zx</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Fira+Code:wght@400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Fira+Code:wght@400;500&family=Syne:wght@700;800&display=swap');
 
     :root {
       --primary: #00ffcc;
-      --primary-hover: #00e6b8;
       --bg: #09090b;
-      --card-bg: #18181b;
+      --card-bg: #111114;
       --border: #27272a;
       --text: #e4e4e7;
-      --text-muted: #a1a1aa;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Rajdhani', sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
+    
+    h1 { text-align: center; font-family: 'Syne', sans-serif; letter-spacing: 2px; margin-bottom: 30px; text-transform: uppercase; }
+    h1 span { color: var(--primary); text-shadow: 0 0 15px var(--primary); }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      padding: 2rem 1rem;
-      min-height: 100vh;
-    }
+    .container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
+    .card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    
+    h2 { font-size: 1.1rem; margin-bottom: 15px; color: var(--primary); text-transform: uppercase; border-left: 4px solid var(--primary); padding-left: 10px; }
 
-    h1 {
-      text-align: center;
-      color: #fff;
-      font-size: 2.5rem;
-      font-weight: 800;
-      margin-bottom: 2rem;
-      letter-spacing: -1px;
-      text-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
-    }
-    h1 span { color: var(--primary); }
-
-    .container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 24px;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .card {
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 24px;
-      border: 1px solid var(--border);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      height: fit-content;
-    }
-
-    h2 {
-      font-size: 1.25rem;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--border);
-      color: #fff;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .oled-icon {
-      width: 40px; height: 40px; background: #000; border-radius: 6px; border: 1px solid #333; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center;
-    }
-    .oled-icon::after {
-      content: ''; position: absolute; top: 2px; left: 2px; right: 2px; bottom: 2px; background: rgba(0, 255, 204, 0.1); border: 1px solid rgba(0, 255, 204, 0.2); color: var(--primary); font-size: 8px; font-weight: bold; display: flex; justify-content: center; align-items: center;
-    }
-    h2.settings-title .oled-icon::after { content: 'INP'; }
-    h2.code-title .oled-icon::after { content: 'PROG'; font-size: 7px; }
-    h2.preview-title .oled-icon { background: repeating-linear-gradient(0deg, #000, #000 2px, rgba(0, 255, 204, 0.1) 2px, rgba(0, 255, 204, 0.1) 4px); }
-    h2.preview-title .oled-icon::after { display: none; }
-
-    /* TABS */
-    .tab-container { display: flex; background: #09090b; border-radius: 8px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 20px; }
-    .tab-btn { flex: 1; padding: 12px; background: transparent; color: var(--text-muted); border: none; cursor: pointer; font-weight: 800; font-size: 0.95rem; }
+    .tab-bar { display: flex; background: #000; border-radius: 6px; margin-bottom: 15px; padding: 3px; }
+    .tab-btn { flex: 1; padding: 8px; background: transparent; border: none; color: #555; cursor: pointer; font-weight: bold; border-radius: 4px; }
     .tab-btn.active { background: var(--primary); color: #000; }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; animation: fadeIn 0.3s ease-in-out; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    .control-group { margin-bottom: 20px; }
-    .section-box { background: #09090b; border: 1px dashed #52525b; border-radius: 8px; padding: 15px; margin-top: 15px; }
-    .section-box h3 { font-size: 0.9rem; color: var(--primary); margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-
-    label { display: block; margin-bottom: 8px; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); }
-    input[type="file"], select, input[type="number"] { width: 100%; padding: 10px; background: #18181b; border: 1px solid var(--border); border-radius: 6px; color: #fff; }
+    .ctrl-group { margin-bottom: 15px; }
+    label { display: block; font-size: 0.8rem; color: #888; margin-bottom: 5px; text-transform: uppercase; }
+    input, select, textarea { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 10px; border-radius: 6px; font-family: inherit; }
     
-    input[type="range"] { -webkit-appearance: none; width: 100%; height: 6px; background: #3f3f46; border-radius: 5px; outline: none; }
-    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--primary); cursor: pointer; }
+    input[type="range"] { -webkit-appearance: none; height: 4px; background: #333; }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 15px; height: 15px; background: var(--primary); border-radius: 50%; cursor: pointer; }
 
-    /* PROGRESS BAR */
-    .progress-container { width: 100%; height: 8px; background: #000; border-radius: 4px; margin-top: 10px; border: 1px solid #333; overflow: hidden; display: none; }
-    .progress-bar { width: 0%; height: 100%; background: var(--primary); box-shadow: 0 0 10px var(--primary); transition: width 0.1s linear; }
+    .oled-bezel { background: #000; padding: 20px; border-radius: 8px; border: 2px solid #222; display: flex; justify-content: center; align-items: center; min-height: 160px; margin: 10px 0; }
+    canvas { background: #000; image-rendering: pixelated; transform: scale(2.5); border: 1px solid #111; }
 
-    .switch-group { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.85rem; color: #fff; }
-    .switch-group input { width: 16px; height: 16px; accent-color: var(--primary); }
+    .status { font-size: 0.8rem; padding: 10px; background: rgba(0,255,204,0.1); color: var(--primary); border-radius: 6px; margin-top: 10px; display: none; }
+    .action-btn { width: 100%; padding: 12px; background: var(--primary); color: #000; border: none; border-radius: 6px; font-weight: 800; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
+    .action-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,255,204,0.3); }
 
-    button.action-btn { width: 100%; padding: 14px; background: #27272a; border: none; border-radius: 8px; color: #fff; font-weight: 800; font-size: 1rem; cursor: pointer; transition: all 0.2s; text-transform: uppercase; }
-    button.action-btn.primary { background: var(--primary); color: #000; margin-top: 10px; }
-    button.action-btn.primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
+    textarea { font-family: 'Fira Code', monospace; font-size: 11px; height: 250px; color: #4ade80; }
 
-    .status-badge { display: flex; align-items: center; justify-content: center; width: 100%; padding: 12px; background: rgba(0, 255, 204, 0.1); border: 1px solid rgba(0, 255, 204, 0.2); color: var(--primary); border-radius: 8px; font-size: 0.85rem; font-weight: 600; margin-top: 15px; }
-
-    .oled-bezel { background: #000; padding: 15px; border-radius: 12px; border: 2px solid #27272a; position: relative; display: flex; justify-content: center; align-items: center; min-height: 150px; }
-    .oled-label { position: absolute; top: -10px; left: 15px; background: var(--card-bg); padding: 0 5px; font-size: 10px; color: #52525b; font-weight: bold; }
-    canvas { image-rendering: pixelated; background: #000; border-radius: 2px; transform: scale(2); transform-origin: center; margin: 30px 0; }
-    
-    textarea { width: 100%; height: 300px; background: #0d0d0d; color: #4ade80; border: 1px solid var(--border); border-radius: 8px; font-family: 'Fira Code', monospace; font-size: 13px; padding: 15px; resize: vertical; margin-top: 10px; }
+    /* Progress bar */
+    .p-bar { height: 4px; background: #333; border-radius: 2px; margin-top: 10px; overflow: hidden; display: none; }
+    .p-fill { height: 100%; background: var(--primary); width: 0%; transition: 0.1s; }
   </style>
 </head>
 <body>
 
-  <h1>OLED <span>Animation Studio</span></h1>
+  <h1>OLED <span>ANIMATION STUDIO</span></h1>
 
   <div class="container">
     <div class="card">
-      <h2 class="settings-title">⚙️ Input Media <div class="oled-icon"></div></h2>
-
-      <div class="tab-container">
-        <button id="tabVideoBtn" class="tab-btn active" onclick="switchTab('video')">MP4 Video</button>
-        <button id="tabImageBtn" class="tab-btn" onclick="switchTab('image')">Image Frames</button>
+      <h2>📥 Input Media</h2>
+      <div class="tab-bar">
+        <button id="vTab" class="tab-btn active" onclick="setTab('video')">VIDEO</button>
+        <button id="iTab" class="tab-btn" onclick="setTab('image')">IMAGES</button>
       </div>
 
-      <div id="videoContent" class="tab-content active">
-        <div class="control-group">
-          <label>Upload Video (.mp4 / .webm)</label>
-          <input type="file" id="uploadVideo" accept="video/*" />
-          <div id="videoProgress" class="progress-container">
-            <div id="videoProgressBar" class="progress-bar"></div>
-          </div>
+      <div id="vBox">
+        <div class="ctrl-group">
+          <label>Video File (.mp4)</label>
+          <input type="file" id="upVid" accept="video/*">
+          <div class="p-bar" id="pBar"><div class="p-fill" id="pFill"></div></div>
         </div>
-        <div class="control-group">
-          <label>Target FPS Ekstrak:</label>
-          <input type="number" id="videoFps" value="10" />
+        <div class="ctrl-group">
+          <label>Target FPS (5 - 15)</label>
+          <input type="number" id="fps" value="10">
         </div>
       </div>
 
-      <div id="imageContent" class="tab-content">
-        <div class="control-group">
-          <label>Upload Image Frames (Multiple)</label>
-          <input type="file" id="uploadImages" accept="image/*" multiple />
+      <div id="iBox" style="display:none">
+        <div class="ctrl-group">
+          <label>Images (Multiple)</label>
+          <input type="file" id="upImg" accept="image/*" multiple>
         </div>
       </div>
 
-      <div class="control-group">
-        <label>Kecepatan Animasi Preview (ms):</label>
-        <input type="number" id="speed" value="80" />
+      <div class="ctrl-group">
+        <label>Preview Speed (ms)</label>
+        <input type="number" id="speed" value="80">
       </div>
 
-      <button id="generateBtn" class="action-btn primary">⚡ GENERATE C++ CODE</button>
-      <div id="status" class="status-badge" style="display: none;"></div>
+      <button class="action-btn" onclick="generateCode()">⚡ GENERATE C++ CODE</button>
+      <div id="status" class="status"></div>
     </div>
 
     <div class="card">
-      <h2 class="preview-title">📺 Live Preview <div class="oled-icon"></div></h2>
-      
+      <h2>📺 Live Preview</h2>
       <div class="oled-bezel">
-        <span class="oled-label" id="bezelLabel">SSD1306 128x64</span>
         <canvas id="oled" width="128" height="64"></canvas>
       </div>
-
-      <div class="section-box">
-        <h3>
-          🖼️ Penyesuaian Visual
-          <label class="switch-group">
-            <input type="checkbox" id="invert"> Invert Color
-          </label>
-        </h3>
-        
-        <div class="control-group">
-          <label>Resolusi OLED Hardware:</label>
-          <select id="oledType">
-            <option value="128x64">128×64 (0.96" Standard)</option>
-            <option value="128x32">128×32 (0.91" Narrow)</option>
-            <option value="64x48">64×48 (0.66" Mini)</option>
+      
+      <div style="background:#000; padding:15px; border-radius:8px; border: 1px solid #222">
+        <div class="ctrl-group">
+          <label>OLED Type</label>
+          <select id="res">
+            <option value="128x64">128x64 Standard</option>
+            <option value="128x32">128x32 Narrow</option>
           </select>
         </div>
-
-        <div class="control-group">
-          <label id="thresholdLabel">Threshold (Kontras): 127</label>
-          <input type="range" id="threshold" min="0" max="255" value="127" />
+        <div class="ctrl-group">
+          <label id="lThr">Threshold: 127</label>
+          <input type="range" id="thr" min="0" max="255" value="127">
         </div>
-
-        <div class="control-group">
-          <label id="scaleLabel">Scale / Zoom: 100%</label>
-          <input type="range" id="scale" min="10" max="255" value="100" />
+        <div class="ctrl-group">
+          <label id="lSc">Zoom: 100%</label>
+          <input type="range" id="sc" min="10" max="255" value="100">
         </div>
-
-        <div style="display: flex; gap: 15px;">
-          <div style="flex: 1;">
-            <label id="xOffsetLabel">X Offset: 0px</label>
-            <input type="range" id="xOffset" min="-128" max="128" value="0" />
+        <div style="display:flex; gap:10px">
+          <div style="flex:1">
+            <label>X Offset</label>
+            <input type="range" id="ox" min="-64" max="64" value="0">
           </div>
-          <div style="flex: 1;">
-            <label id="yOffsetLabel">Y Offset: 0px</label>
-            <input type="range" id="yOffset" min="-64" max="64" value="0" />
+          <div style="flex:1">
+            <label>Y Offset</label>
+            <input type="range" id="oy" min="-32" max="32" value="0">
           </div>
         </div>
       </div>
     </div>
 
-    <div class="card" style="grid-column: 1 / -1;">
-      <h2 class="code-title">💻 C++ PROGMEM Output <div class="oled-icon"></div></h2>
-      <textarea id="output" readonly placeholder="// Kode hexa akan muncul di sini..."></textarea>
-      <button id="copyBtn" class="action-btn" onclick="copyToClipboard()">📋 COPY CODE TO CLIPBOARD</button>
+    <div class="card" style="grid-column: 1/-1">
+      <h2>💻 C++ PROGMEM OUTPUT</h2>
+      <textarea id="out" readonly></textarea>
+      <button class="action-btn" style="margin-top:10px; background:#27272a; color:#fff" onclick="copy()">📋 COPY TO CLIPBOARD</button>
     </div>
   </div>
 
   <script>
     const canvas = document.getElementById('oled');
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    
-    const uploadImagesBtn = document.getElementById('uploadImages');
-    const uploadVideoBtn = document.getElementById('uploadVideo');
-    const videoProgress = document.getElementById('videoProgress');
-    const videoProgressBar = document.getElementById('videoProgressBar');
-    const videoFpsInput = document.getElementById('videoFps');
-    const oledType = document.getElementById('oledType');
-    const bezelLabel = document.getElementById('bezelLabel');
-    const scaleInput = document.getElementById('scale');
-    const xOffsetInput = document.getElementById('xOffset');
-    const yOffsetInput = document.getElementById('yOffset');
-    const thresholdInput = document.getElementById('threshold');
-    const invertInput = document.getElementById('invert');
-    const speedInput = document.getElementById('speed');
-    const output = document.getElementById('output');
-    const statusText = document.getElementById('status');
-    const generateBtn = document.getElementById('generateBtn');
-    const copyBtn = document.getElementById('copyBtn');
+    let frames = [];
+    let curIdx = 0;
+    let loop = null;
+    let cw = 128, ch = 64;
 
-    let framesData = []; 
-    let animationInterval = null;
-    let currentFrameIdx = 0;
-    let canvasW = 128;
-    let canvasH = 64;
-
-    function switchTab(tabName) {
-      if(animationInterval) clearInterval(animationInterval);
-      framesData = []; ctx.clearRect(0, 0, canvasW, canvasH);
-      statusText.style.display = 'none';
-      videoProgress.style.display = 'none';
-      document.getElementById('tabVideoBtn').classList.toggle('active', tabName === 'video');
-      document.getElementById('tabImageBtn').classList.toggle('active', tabName === 'image');
-      document.getElementById('videoContent').classList.toggle('active', tabName === 'video');
-      document.getElementById('imageContent').classList.toggle('active', tabName === 'image');
+    function setTab(t) {
+      document.getElementById('vBox').style.display = t==='video'?'block':'none';
+      document.getElementById('iBox').style.display = t==='image'?'block':'none';
+      document.getElementById('vTab').className = t==='video'?'tab-btn active':'tab-btn';
+      document.getElementById('iTab').className = t==='image'?'tab-btn active':'tab-btn';
     }
 
-    oledType.addEventListener('change', (e) => {
-      const [w, h] = e.target.value.split('x').map(Number);
-      canvasW = w; canvasH = h;
-      canvas.width = w; canvas.height = h;
-      bezelLabel.innerText = `SSD1306 ${w}x${h}`;
-      xOffsetInput.min = -w; xOffsetInput.max = w;
-      yOffsetInput.min = -h; yOffsetInput.max = h;
-      if (framesData.length > 0) renderPreview();
-    });
+    // --- LOGIKA SETTING ---
+    document.getElementById('res').onchange = (e) => {
+      [cw, ch] = e.target.value.split('x').map(Number);
+      canvas.width = cw; canvas.height = ch;
+    };
+    document.getElementById('thr').oninput = (e) => document.getElementById('lThr').innerText = `Threshold: ${e.target.value}`;
+    document.getElementById('sc').oninput = (e) => document.getElementById('lSc').innerText = `Zoom: ${e.target.value}%`;
 
-    let isSliderInteracting = false;
-    function pause() { isSliderInteracting = true; if(animationInterval) clearInterval(animationInterval); }
-    function resume() { isSliderInteracting = false; if (framesData.length > 0) startAnimation(); }
-
-    [thresholdInput, scaleInput, xOffsetInput, yOffsetInput].forEach(el => {
-      el.addEventListener('mousedown', pause); el.addEventListener('touchstart', pause);
-      el.addEventListener('mouseup', resume); el.addEventListener('touchend', resume);
-      el.addEventListener('input', () => {
-          document.getElementById('thresholdLabel').innerText = `Threshold: ${thresholdInput.value}`;
-          document.getElementById('scaleLabel').innerText = `Scale: ${scaleInput.value}%`;
-          document.getElementById('xOffsetLabel').innerText = `X Offset: ${xOffsetInput.value}px`;
-          document.getElementById('yOffsetLabel').innerText = `Y Offset: ${yOffsetInput.value}px`;
-          if (framesData.length > 0) renderPreview();
-      });
-    });
-
-    invertInput.addEventListener('change', () => { if (framesData.length > 0) renderPreview(); });
-
-    uploadImagesBtn.addEventListener('change', async (e) => {
-      const files = Array.from(e.target.files);
-      if (files.length === 0) return;
-      framesData = []; showStatus("⏳ Processing Images...");
-      const promises = files.map(file => new Promise(res => {
-        const reader = new FileReader();
-        reader.onload = (ev) => { const img = new Image(); img.onload = () => res({img}); img.src = ev.target.result; };
-        reader.readAsDataURL(file);
-      }));
-      framesData = await Promise.all(promises);
-      showStatus(`✅ ${framesData.length} Frames loaded.`); startAnimation();
-    });
-
-    // --- PERBAIKAN MESIN EKSTRAKSI VIDEO (ANTI-STUCK) ---
-    uploadVideoBtn.addEventListener('change', async (e) => {
+    // --- VIDEO ENGINE ---
+    document.getElementById('upVid').onchange = async (e) => {
       const file = e.target.files[0];
-      if (!file) return;
-      framesData = []; 
-      videoProgress.style.display = 'block';
-      videoProgressBar.style.width = '0%';
-      showStatus("🎥 Menyiapkan Video...");
-      
-      const targetFps = parseInt(videoFpsInput.value) || 10;
-      const step = 1 / targetFps;
-      
-      const video = document.createElement('video');
-      video.muted = true; video.playsInline = true;
-      video.style.display = "none";
-      document.body.appendChild(video);
-      video.src = URL.createObjectURL(file);
+      if(!file) return;
+      frames = [];
+      document.getElementById('pBar').style.display = 'block';
+      const v = document.createElement('video');
+      v.src = URL.createObjectURL(file);
+      await v.play(); v.pause();
 
-      await new Promise(res => video.onloadedmetadata = res);
+      const fps = parseInt(document.getElementById('fps').value);
+      const step = 1/fps;
+      const tmp = document.createElement('canvas');
+      const tctx = tmp.getContext('2d');
+      // Downscale agar enteng
+      tmp.width = 128; tmp.height = 64; 
 
-      const duration = video.duration;
-      const tempCanvas = document.createElement('canvas');
-      const tempCtx = tempCanvas.getContext('2d');
-
-      let currentTime = 0;
-      
-      // Menggunakan Loop Async untuk menggantikan Chain Event yang sering macet
-      while (currentTime <= duration && framesData.length < 200) {
-          video.currentTime = currentTime;
-          
-          // Tunggu browser selesai mencari frame (seeked)
-          await new Promise(res => {
-              const onSeeked = () => {
-                  video.removeEventListener('seeked', onSeeked);
-                  res();
-              };
-              video.addEventListener('seeked', onSeeked);
-              // Timeout pengaman jika seeked macet
-              setTimeout(onSeeked, 500); 
-          });
-
-          tempCanvas.width = video.videoWidth;
-          tempCanvas.height = video.videoHeight;
-          tempCtx.drawImage(video, 0, 0);
-
-          const img = new Image();
-          img.src = tempCanvas.toDataURL('image/jpeg', 0.8);
-          await new Promise(res => img.onload = res);
-          
-          framesData.push({img});
-          
-          currentTime += step;
-          const progress = Math.floor((currentTime / duration) * 100);
-          videoProgressBar.style.width = Math.min(progress, 100) + '%';
-          showStatus(`⏳ Mengekstrak: ${Math.min(progress, 100)}% (${framesData.length} f)`);
+      for(let t=0; t<v.duration; t+=step) {
+        v.currentTime = t;
+        await new Promise(r => v.onseeked = r);
+        tctx.drawImage(v, 0, 0, 128, 64);
+        const img = new Image();
+        img.src = tmp.toDataURL('image/jpeg', 0.5);
+        await new Promise(r => img.onload = r);
+        frames.push(img);
+        document.getElementById('pFill').style.width = (t/v.duration*100)+'%';
       }
+      play();
+      document.getElementById('pBar').style.display = 'none';
+      document.getElementById('status').style.display = 'block';
+      document.getElementById('status').innerText = `✅ ${frames.length} Frame Video Dimuat!`;
+    };
 
-      videoProgressBar.style.width = '100%';
-      showStatus(`✅ Sukses! ${framesData.length} Frame siap.`); 
-      document.body.removeChild(video);
-      speedInput.value = Math.floor(1000/targetFps); 
-      startAnimation();
-      setTimeout(() => { videoProgress.style.display = 'none'; }, 1000);
-    });
-
-    function drawBitmapKustom(context, source, width, height) {
-      context.fillStyle = "black"; context.fillRect(0, 0, width, height);
-      const scale = parseInt(scaleInput.value) / 100;
-      const xOff = parseInt(xOffsetInput.value); const yOff = parseInt(yOffsetInput.value);
-      const baseScale = Math.min(width / source.width, height / source.height);
-      const finalScale = baseScale * scale;
-      const dWidth = source.width * finalScale; const dHeight = source.height * finalScale;
-      const dx = (width - dWidth) / 2 + xOff; const dy = (height - dHeight) / 2 + yOff;
-      context.drawImage(source, dx, dy, dWidth, dHeight);
-    }
-
-    function renderPreview() { if (framesData.length === 0) return; drawToCanvas(framesData[currentFrameIdx].img); }
-
-    function drawToCanvas(image) {
-      drawBitmapKustom(ctx, image, canvasW, canvasH);
-      const imageData = ctx.getImageData(0, 0, canvasW, canvasH);
-      const data = imageData.data;
-      const threshold = parseInt(thresholdInput.value);
-      const invert = invertInput.checked;
-      for (let i = 0; i < data.length; i += 4) {
-        const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-        let val = avg > threshold ? 255 : 0;
-        if (invert) val = 255 - val;
-        data[i] = val; data[i + 1] = val; data[i + 2] = val;
+    // --- IMAGE ENGINE ---
+    document.getElementById('upImg').onchange = async (e) => {
+      frames = [];
+      for(let f of e.target.files) {
+        const img = new Image();
+        img.src = URL.createObjectURL(f);
+        await new Promise(r => img.onload = r);
+        frames.push(img);
       }
-      ctx.putImageData(imageData, 0, 0);
+      play();
+    };
+
+    function play() {
+      if(loop) clearInterval(loop);
+      loop = setInterval(() => {
+        if(!frames.length) return;
+        draw(frames[curIdx]);
+        curIdx = (curIdx+1)%frames.length;
+      }, document.getElementById('speed').value);
     }
 
-    function startAnimation() {
-      if (animationInterval) clearInterval(animationInterval);
-      animationInterval = setInterval(() => { if (framesData.length === 0 || isSliderInteracting) return; renderPreview(); currentFrameIdx = (currentFrameIdx + 1) % framesData.length; }, parseInt(speedInput.value));
+    function draw(img) {
+      ctx.fillStyle = "black";
+      ctx.fillRect(0,0,cw,ch);
+      const s = document.getElementById('sc').value / 100;
+      const ox = parseInt(document.getElementById('ox').value);
+      const oy = parseInt(document.getElementById('oy').value);
+      
+      const aspect = Math.min(cw/img.width, ch/img.height) * s;
+      const dw = img.width * aspect;
+      const dh = img.height * aspect;
+      ctx.drawImage(img, (cw-dw)/2 + ox, (ch-dh)/2 + oy, dw, dh);
+
+      const id = ctx.getImageData(0,0,cw,ch);
+      const d = id.data;
+      const thr = document.getElementById('thr').value;
+      
+      for(let i=0; i<d.length; i+=4) {
+        const gray = (d[i]+d[i+1]+d[i+2])/3;
+        const v = gray > thr ? 255 : 0;
+        d[i]=d[i+1]=d[i+2]=v;
+      }
+      ctx.putImageData(id, 0, 0);
     }
 
-    generateBtn.addEventListener('click', () => {
-      if (framesData.length === 0) return;
-      showStatus("⏳ Generating C++ Code...");
-      setTimeout(() => {
-        let cppCode = `// ==========================================\n// Monochromatic OLED Animation Array\n// Resolution: ${canvasW}x${canvasH} | Total Frames: ${framesData.length}\n// ==========================================\n\n#include <pgmspace.h>\n\nconst int FRAME_COUNT = ${framesData.length};\nconst int FRAME_WIDTH = ${canvasW};\nconst int FRAME_HEIGHT = ${canvasH};\n\n`;
-        let arrayNames = [];
-        framesData.forEach((frame, idx) => {
-          drawBitmapKustom(ctx, frame.img, canvasW, canvasH);
-          const imgData = ctx.getImageData(0, 0, canvasW, canvasH).data;
-          const threshold = parseInt(thresholdInput.value);
-          const varName = `frame_${idx}`; arrayNames.push(varName);
-          cppCode += `const unsigned char ${varName} [] PROGMEM = {\n`;
-          let bytes = [];
-          for (let page = 0; page < canvasH / 8; page++) {
-            for (let x = 0; x < canvasW; x++) {
-              let byte = 0;
-              for (let bit = 0; bit < 8; bit++) {
-                const y = (page * 8) + bit; const pos = (y * canvasW + x) * 4;
-                const avg = (imgData[pos] + imgData[pos+1] + imgData[pos+2]) / 3;
-                let val = avg > threshold; if (invertInput.checked) val = !val;
-                if (val) byte |= (1 << bit);
-              }
-              bytes.push("0x" + byte.toString(16).padStart(2, '0').toUpperCase());
+    // --- GENERATOR: FORMAT HORIZONTAL (ADAFRUIT GFX) ---
+    function generateCode() {
+      if(!frames.length) return;
+      let code = `// OLED Animation Array\n// Resolution: ${cw}x${ch} | Frames: ${frames.length}\n\n#include <pgmspace.h>\n\nconst int FRAME_COUNT = ${frames.length};\nconst int FRAME_WIDTH = ${cw};\nconst int FRAME_HEIGHT = ${ch};\n\n`;
+      let names = [];
+
+      frames.forEach((f, i) => {
+        draw(f);
+        const d = ctx.getImageData(0,0,cw,ch).data;
+        const name = `frame_${i}`;
+        names.push(name);
+        code += `const unsigned char ${name}[] PROGMEM = {\n`;
+        
+        let bytes = [];
+        // Loop Baris (Y) dulu baru Kolom (X) - Ini format Horizontal
+        for(let y=0; y<ch; y++) {
+          for(let x=0; x<cw; x+=8) {
+            let byte = 0;
+            for(let b=0; b<8; b++) {
+              const idx = ((y * cw) + (x + b)) * 4;
+              if(d[idx] > 127) byte |= (1 << (7 - b)); // Bit paling kiri adalah MSB
             }
+            bytes.push("0x" + byte.toString(16).padStart(2,'0').toUpperCase());
           }
-          cppCode += "  " + bytes.join(", ") + "\n};\n\n";
-        });
-        cppCode += `const unsigned char* const animation_frames[] PROGMEM = {\n  ${arrayNames.join(", ")}\n};\n`;
-        output.value = cppCode; showStatus("✨ Kode Berhasil Dibuat!");
-      }, 50);
-    });
+        }
 
-    function copyToClipboard() {
-      if (!output.value) return;
-      output.select();
-      document.execCommand('copy');
-      const originalText = copyBtn.innerText;
-      copyBtn.innerText = "✅ TERSALIN KE CLIPBOARD!";
-      setTimeout(() => { copyBtn.innerText = originalText; }, 2000);
+        // Pecah jadi 16 kolom agar IDE tidak lag
+        for(let j=0; j<bytes.length; j+=16) {
+          code += "  " + bytes.slice(j, j+16).join(", ") + ",\n";
+        }
+        code += "};\n\n";
+      });
+
+      code += `const unsigned char* const animation_frames[] PROGMEM = {\n  ${names.join(", ")}\n};\n`;
+      document.getElementById('out').value = code;
+      document.getElementById('status').innerText = "✨ KODE C++ BERHASIL DIBUAT!";
     }
-    
-    function showStatus(msg) { statusText.style.display = 'flex'; statusText.innerText = msg; }
+
+    function copy() {
+      const t = document.getElementById('out');
+      t.select(); document.execCommand('copy');
+      alert("Tersalin! Paste ke Arduino IDE sekarang.");
+    }
   </script>
 </body>
 </html>
